@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Noolukettu VIP Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --cream: #fdf5e6; --gold: #d4af37; --kerala-green: #1b4d3e; }
+        body { background-color: var(--cream); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; }
+        .kerala-header { background: var(--kerala-green); color: white; border-bottom: 4px solid var(--gold); padding: 15px; text-align: center; sticky: top; }
+        .card { border-radius: 15px; border: 1px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        
+        /* Security */
+        #lockScreen { position: fixed; inset: 0; background: var(--kerala-green); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        
+        /* Pulse Animation for VIP Arrival */
+        .pulse-red { animation: pulse 1.5s infinite; background: #dc3545 !important; color: white; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        .batch-btn { width: 100%; height: 60px; font-weight: bold; border-radius: 12px; }
+        .nav-link { font-size: 12px; color: var(--kerala-green); }
+    </style>
+</head>
+<body>
+
+    <div id="lockScreen">
+        <h3 class="mb-4">🔑 Family PIN Required</h3>
+        <input type="tel" id="pinInput" class="form-control w-50 mb-3 text-center" placeholder="****">
+        <button class="btn btn-warning w-50" onclick="checkPin()">Unlock Dashboard</button>
+    </div>
+
+    <div class="kerala-header sticky-top">
+        <div class="d-flex justify-content-between align-items-center px-3">
+            <h6 class="mb-0">Noolukettu: Feb 22</h6>
+            <button class="btn btn-sm btn-outline-warning" onclick="syncData()">🔄 Sync Now</button>
+        </div>
+        <div id="countdown" class="small fw-bold mt-1">Calculating...</div>
+    </div>
+
+    <div class="container mt-3">
+        
+        <div class="card p-3 bg-white">
+            <h6 class="fw-bold text-muted small">💰 FINANCIAL MONITOR</h6>
+            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                <span>Aranjanam (Paid)</span>
+                <span class="fw-bold text-success">₹65,000</span>
+            </div>
+            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                <span>Photo (Booked)</span>
+                <span class="fw-bold text-primary">₹3,500</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Rice/Chicken (Est)</span>
+                <span class="fw-bold text-danger" id="dynamicTotal">₹18,500</span>
+            </div>
+        </div>
+
+        <div class="card p-3 text-center" id="vipCard">
+            <h6 class="fw-bold mb-3">🚌 VIP BUS STATUS (65 Guests)</h6>
+            <button class="btn btn-lg btn-primary w-100 mb-2" id="arrivalBtn" onclick="triggerArrival()">
+                MARK BUS ARRIVED
+            </button>
+            <div id="kitchenAlert" class="small fw-bold d-none">📢 ALERT: SERVE SNACKS NOW!</div>
+        </div>
+
+        <h6 class="fw-bold text-muted small mb-2">🍽️ LUNCH BATCH MANAGER (70 Chairs)</h6>
+        <div class="row g-2 mb-4">
+            <div class="col-6"><button id="b1" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b1')">Batch 1: Wait</button></div>
+            <div class="col-6"><button id="b2" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b2')">Batch 2: Wait</button></div>
+            <div class="col-6"><button id="b3" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b3')">Batch 3: Wait</button></div>
+            <div class="col-6"><button id="b4" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b4')">Batch 4: Wait</button></div>
+        </div>
+
+        <h6 class="fw-bold text-muted small mb-2">📋 SYNCED TASKS (Google Tasks)</h6>
+        <div id="taskContainer">
+            </div>
+
+    </div>
+
+    <div class="fixed-bottom bg-white border-top p-2 d-flex justify-content-around shadow">
+        <a href="https://wa.me/DRIVER_NUMBER" class="nav-link text-center">🚌<br>Bus</a>
+        <a href="https://wa.me/PHOTO_NUMBER" class="nav-link text-center">📷<br>Photo</a>
+        <a href="https://wa.me/COOK_NUMBER" class="nav-link text-center">👨‍🍳<br>Cook</a>
+        <a href="https://maps.google.com/?q=YOUR_PIN" class="nav-link text-center">📍<br>Home</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        // CONFIGURATION
+        const SHEET_URL = 'YOUR_PUBLISHED_CSV_LINK_HERE'; // From Google Sheets
+
+        function checkPin() {
+            if(document.getElementById('pinInput').value === "2026") {
+                document.getElementById('lockScreen').style.display = 'none';
+                syncData();
+            } else { alert("Access Denied"); }
+        }
+
+        // VIP Arrival Logic
+        function triggerArrival() {
+            const btn = document.getElementById('arrivalBtn');
+            const card = document.getElementById('vipCard');
+            const alertMsg = document.getElementById('kitchenAlert');
+            
+            btn.innerText = "BUS ARRIVED ✅";
+            btn.classList.replace('btn-primary', 'btn-success');
+            card.classList.add('pulse-red');
+            alertMsg.classList.remove('d-none');
+        }
+
+        // Batch Toggle Logic
+        function toggleBatch(id) {
+            const btn = document.getElementById(id);
+            const batchNum = id.replace('b','');
+            if (btn.innerText.includes('Wait')) {
+                btn.innerText = `Batch ${batchNum}: Serving`;
+                btn.className = "btn btn-warning batch-btn text-white";
+            } else if (btn.innerText.includes('Serving')) {
+                btn.innerText = `Batch ${batchNum}: Finished`;
+                btn.className = "btn btn-success batch-btn";
+            } else {
+                btn.innerText = `Batch ${batchNum}: Wait`;
+                btn.className = "btn btn-outline-dark batch-btn";
+            }
+        }
+
+        // Sync from Phone (Google Sheet Bridge)
+        function syncData() {
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    renderTasks(results.data);
+                }
+            });
+        }
+
+        function renderTasks(data) {
+            const container = document.getElementById('taskContainer');
+            container.innerHTML = data.map(row => `
+                <div class="card p-3 mb-2 border-start border-5 ${row.Status === 'Done' ? 'border-success' : 'border-warning'}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="${row.Status === 'Done' ? 'text-decoration-line-through' : ''}">${row.Task}</span>
+                        <span class="badge ${row.Status === 'Done' ? 'bg-success' : 'bg-warning'}">${row.Status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Countdown Timer
+        setInterval(() => {
+            const eventTime = new Date("Feb 22, 2026 10:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = eventTime - now;
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m Until Noolukettu`;
+        }, 1000);
+
+    </script>
+</body>
+</html>
