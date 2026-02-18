@@ -3,162 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Noolukettu VIP Hub</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Noolukettu 2026 | Master Integrated</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --cream: #fdf5e6; --gold: #d4af37; --kerala-green: #1b4d3e; }
-        body { background-color: var(--cream); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; }
-        .kerala-header { background: var(--kerala-green); color: white; border-bottom: 4px solid var(--gold); padding: 15px; text-align: center; sticky: top; }
-        .card { border-radius: 15px; border: 1px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        
-        /* Security */
-        #lockScreen { position: fixed; inset: 0; background: var(--kerala-green); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        
-        /* Pulse Animation for VIP Arrival */
-        .pulse-red { animation: pulse 1.5s infinite; background: #dc3545 !important; color: white; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
-        .batch-btn { width: 100%; height: 60px; font-weight: bold; border-radius: 12px; }
-        .nav-link { font-size: 12px; color: var(--kerala-green); }
+        body { background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .safe-area-bottom { padding-bottom: 140px; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        .done-card { background: linear-gradient(to right, #f0fdf4, #ffffff); border-left: 8px solid #10b981 !important; }
+        .father-pill { background-color: #dbeafe; color: #1e40af; }
+        .mother-pill { background-color: #fce7f3; color: #9d174d; }
+        .guest-checked { background-color: #f0fdf4; border-left-color: #10b981 !important; }
+        .pulse-live { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+        #bill-modal { background: rgba(0,0,0,0.95); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body>
+<body class="safe-area-bottom">
 
-    <div id="lockScreen">
-        <h3 class="mb-4">🔑 Family PIN Required</h3>
-        <input type="tel" id="pinInput" class="form-control w-50 mb-3 text-center" placeholder="****">
-        <button class="btn btn-warning w-50" onclick="checkPin()">Unlock Dashboard</button>
-    </div>
-
-    <div class="kerala-header sticky-top">
-        <div class="d-flex justify-content-between align-items-center px-3">
-            <h6 class="mb-0">Noolukettu: Feb 22</h6>
-            <button class="btn btn-sm btn-outline-warning" onclick="syncData()">🔄 Sync Now</button>
+    <div class="sticky top-0 z-50 glass border-b border-indigo-100 p-4">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-800 tracking-tight uppercase leading-none">Noolukettu 2026</h1>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Feb 22 • Master Project</p>
+            </div>
+            <div class="flex items-center space-x-2 bg-indigo-600 text-white px-3 py-1.5 rounded-2xl shadow-lg">
+                <i data-lucide="users" class="w-3 h-3 pulse-live"></i>
+                <span id="header-headcount" class="text-xs font-bold">0</span>
+            </div>
         </div>
-        <div id="countdown" class="small fw-bold mt-1">Calculating...</div>
-    </div>
-
-    <div class="container mt-3">
         
-        <div class="card p-3 bg-white">
-            <h6 class="fw-bold text-muted small">💰 FINANCIAL MONITOR</h6>
-            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                <span>Aranjanam (Paid)</span>
-                <span class="fw-bold text-success">₹65,000</span>
-            </div>
-            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                <span>Photo (Booked)</span>
-                <span class="fw-bold text-primary">₹3,500</span>
-            </div>
-            <div class="d-flex justify-content-between">
-                <span>Rice/Chicken (Est)</span>
-                <span class="fw-bold text-danger" id="dynamicTotal">₹18,500</span>
-            </div>
+        <div class="grid grid-cols-3 gap-2 mb-2">
+            <div class="bg-white p-2 rounded-xl border border-slate-100 text-center"><p class="text-[7px] font-bold text-slate-400 uppercase">Budget</p><p id="grand-est" class="text-xs font-bold text-slate-700">₹0</p></div>
+            <div class="bg-indigo-50 p-2 rounded-xl border border-indigo-100 text-center"><p class="text-[7px] font-bold text-indigo-400 uppercase">Spent</p><p id="grand-act" class="text-xs font-black text-indigo-700">₹0</p></div>
+            <div class="bg-green-50 p-2 rounded-xl border border-green-100 text-center"><p class="text-[7px] font-bold text-green-500 uppercase">Savings</p><p id="total-savings" class="text-xs font-black text-green-600">₹0</p></div>
         </div>
-
-        <div class="card p-3 text-center" id="vipCard">
-            <h6 class="fw-bold mb-3">🚌 VIP BUS STATUS (65 Guests)</h6>
-            <button class="btn btn-lg btn-primary w-100 mb-2" id="arrivalBtn" onclick="triggerArrival()">
-                MARK BUS ARRIVED
-            </button>
-            <div id="kitchenAlert" class="small fw-bold d-none">📢 ALERT: SERVE SNACKS NOW!</div>
-        </div>
-
-        <h6 class="fw-bold text-muted small mb-2">🍽️ LUNCH BATCH MANAGER (70 Chairs)</h6>
-        <div class="row g-2 mb-4">
-            <div class="col-6"><button id="b1" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b1')">Batch 1: Wait</button></div>
-            <div class="col-6"><button id="b2" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b2')">Batch 2: Wait</button></div>
-            <div class="col-6"><button id="b3" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b3')">Batch 3: Wait</button></div>
-            <div class="col-6"><button id="b4" class="btn btn-outline-dark batch-btn" onclick="toggleBatch('b4')">Batch 4: Wait</button></div>
-        </div>
-
-        <h6 class="fw-bold text-muted small mb-2">📋 SYNCED TASKS (Google Tasks)</h6>
-        <div id="taskContainer">
-            </div>
-
+        <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"><div id="budget-progress" class="bg-indigo-600 h-full transition-all duration-1000 w-0"></div></div>
     </div>
 
-    <div class="fixed-bottom bg-white border-top p-2 d-flex justify-content-around shadow">
-        <a href="https://wa.me/DRIVER_NUMBER" class="nav-link text-center">🚌<br>Bus</a>
-        <a href="https://wa.me/PHOTO_NUMBER" class="nav-link text-center">📷<br>Photo</a>
-        <a href="https://wa.me/COOK_NUMBER" class="nav-link text-center">👨‍🍳<br>Cook</a>
-        <a href="https://maps.google.com/?q=YOUR_PIN" class="nav-link text-center">📍<br>Home</a>
-    </div>
+    <main id="app" class="p-4 max-w-xl mx-auto">
+        <div id="view-dashboard" class="space-y-3 animate-in fade-in duration-500">
+            <div id="category-cards" class="grid grid-cols-1 gap-3"></div>
+        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script>
-        // CONFIGURATION
-        const SHEET_URL = 'YOUR_PUBLISHED_CSV_LINK_HERE'; // From Google Sheets
-
-        function checkPin() {
-            if(document.getElementById('pinInput').value === "2026") {
-                document.getElementById('lockScreen').style.display = 'none';
-                syncData();
-            } else { alert("Access Denied"); }
-        }
-
-        // VIP Arrival Logic
-        function triggerArrival() {
-            const btn = document.getElementById('arrivalBtn');
-            const card = document.getElementById('vipCard');
-            const alertMsg = document.getElementById('kitchenAlert');
-            
-            btn.innerText = "BUS ARRIVED ✅";
-            btn.classList.replace('btn-primary', 'btn-success');
-            card.classList.add('pulse-red');
-            alertMsg.classList.remove('d-none');
-        }
-
-        // Batch Toggle Logic
-        function toggleBatch(id) {
-            const btn = document.getElementById(id);
-            const batchNum = id.replace('b','');
-            if (btn.innerText.includes('Wait')) {
-                btn.innerText = `Batch ${batchNum}: Serving`;
-                btn.className = "btn btn-warning batch-btn text-white";
-            } else if (btn.innerText.includes('Serving')) {
-                btn.innerText = `Batch ${batchNum}: Finished`;
-                btn.className = "btn btn-success batch-btn";
-            } else {
-                btn.innerText = `Batch ${batchNum}: Wait`;
-                btn.className = "btn btn-outline-dark batch-btn";
-            }
-        }
-
-        // Sync from Phone (Google Sheet Bridge)
-        function syncData() {
-            Papa.parse(SHEET_URL, {
-                download: true,
-                header: true,
-                complete: function(results) {
-                    renderTasks(results.data);
-                }
-            });
-        }
-
-        function renderTasks(data) {
-            const container = document.getElementById('taskContainer');
-            container.innerHTML = data.map(row => `
-                <div class="card p-3 mb-2 border-start border-5 ${row.Status === 'Done' ? 'border-success' : 'border-warning'}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="${row.Status === 'Done' ? 'text-decoration-line-through' : ''}">${row.Task}</span>
-                        <span class="badge ${row.Status === 'Done' ? 'bg-success' : 'bg-warning'}">${row.Status}</span>
-                    </div>
+        <div id="view-detail" class="hidden animate-in slide-in-from-right duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
+                <div class="flex gap-2">
+                    <button onclick="editTopicInfo()" class="bg-slate-100 text-slate-600 p-2 rounded-xl border border-slate-200"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                    <button onclick="toggleStatus()" id="status-btn" class="text-[10px] px-4 py-2 rounded-xl font-bold uppercase tracking-wider shadow-sm"></button>
                 </div>
-            `).join('');
+            </div>
+            
+            <h2 id="detail-title" class="text-3xl font-extrabold text-slate-800 uppercase leading-tight mb-2"></h2>
+            <div onclick="editAssignee()" class="inline-flex items-center text-[10px] text-indigo-600 font-bold uppercase bg-white px-3 py-1.5 rounded-full border border-indigo-100 shadow-sm mb-8">
+                <i data-lucide="shield-check" class="w-3 h-3 mr-1.5"></i> Lead: <span id="detail-assignee" class="ml-1"></span>
+            </div>
+            
+            <div id="items-list" class="space-y-4 mb-8"></div>
+            
+            <div class="pt-8 border-t border-slate-200">
+                <label class="text-[10px] font-black text-slate-400 uppercase flex items-center mb-3 tracking-widest"><i data-lucide="sticky-note" class="w-3 h-3 mr-1.5"></i> Shop Info & Instructions</label>
+                <textarea id="cat-notes" onchange="updateNotes(this.value)" class="w-full h-32 p-4 bg-yellow-50/50 border border-yellow-100 rounded-2xl text-sm italic focus:ring-2 focus:ring-indigo-200 focus:outline-none"></textarea>
+            </div>
+
+            <button onclick="addItem()" class="mt-8 w-full bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform flex items-center justify-center">
+                <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i> Add Line Item
+            </button>
+        </div>
+    </main>
+
+    <div id="bill-modal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-6">
+        <button onclick="closeBill()" class="absolute top-8 right-8 text-white bg-white/20 p-3 rounded-full"><i data-lucide="x"></i></button>
+        <img id="bill-img-preview" class="max-w-full max-h-[70vh] rounded-2xl shadow-2xl border-2 border-white/10">
+        <button onclick="removeBill()" class="mt-8 bg-red-500 text-white px-8 py-3 rounded-2xl font-bold text-sm shadow-xl uppercase">Delete Receipt Image</button>
+    </div>
+
+    <nav class="fixed bottom-6 left-4 right-4 glass rounded-3xl p-4 flex justify-around items-center card-shadow z-50">
+        <button onclick="showView('dashboard')" class="text-indigo-600"><i data-lucide="home"></i></button>
+        <button onclick="addTopic()" class="text-slate-400"><i data-lucide="plus-square"></i></button>
+        <label class="text-slate-400 cursor-pointer"><i data-lucide="file-up"></i><input type="file" id="csv-input" accept=".csv" class="hidden" onchange="handleCSV(this)"></label>
+        <button onclick="exportData()" class="text-slate-400"><i data-lucide="save"></i></button>
+        <button onclick="resetData()" class="text-red-300"><i data-lucide="refresh-cw"></i></button>
+    </nav>
+
+    <script>
+        const initialData = [
+            { id: 'c1', name: "1. Rentals & Vessels", assignee: "Meeran", completed: false, isGuest: false, notes: "", items: [
+                { name: "Pandal Setup", est: 8000, act: 0, p: "", bill: null },
+                { name: "Plastic Chairs (220)", est: 1760, act: 0, p: "", bill: null },
+                { name: "Vessels & Chembu", est: 2100, act: 0, p: "", bill: null },
+                { name: "Gas Stove & Cylinder", est: 2750, act: 0, p: "", bill: null },
+                { name: "Labor (Loading)", est: 1500, act: 0, p: "", bill: null }
+            ]},
+            { id: 'c2', name: "2. Grocery & Produce", assignee: "Father", completed: false, isGuest: false, notes: "", items: [
+                { name: "Rice (Khaima 30kg)", est: 3600, act: 0, p: "", bill: null },
+                { name: "Oils & Ghee Mix", est: 3650, act: 0, p: "", bill: null },
+                { name: "Provisions & Spices", est: 4040, act: 0, p: "", bill: null },
+                { name: "Produce & Vegetables", est: 1710, act: 0, p: "", bill: null }
+            ]},
+            { id: 'c3', name: "3. Fresh Food", assignee: "Self", completed: false, isGuest: false, notes: "", items: [
+                { name: "Chicken Meat (50kg)", est: 12000, act: 0, p: "", bill: null },
+                { name: "King Fish (10kg)", est: 8000, act: 0, p: "", bill: null },
+                { name: "Milk & Curd", est: 2500, act: 0, p: "", bill: null }
+            ]},
+            { id: 'c4', name: "4. Logistics & Rituals", assignee: "Self", completed: false, isGuest: false, notes: "", items: [
+                { name: "Gold Aranjanam", est: 65000, act: 65000, p: "Settled", bill: null },
+                { name: "Tempo Traveller (2 Nos)", est: 14500, act: 0, p: "", bill: null },
+                { name: "Onakkodi Dress", est: 15000, act: 0, p: "", bill: null },
+                { name: "Photo & Decor", est: 6500, act: 0, p: "", bill: null },
+                { name: "Cooking Labor", est: 10000, act: 0, p: "", bill: null }
+            ]},
+            { id: 'c5', name: "5. Snacks & Others", assignee: "Self", completed: false, isGuest: false, notes: "", items: [
+                { name: "Halwa Return Gift", est: 6000, act: 0, p: "", bill: null },
+                { name: "Uzhunnu Vada (300 Nos)", est: 2400, act: 0, p: "", bill: null },
+                { name: "Banana/Chips/Tea", est: 4500, act: 0, p: "", bill: null }
+            ]},
+            { id: 'c6', name: "6. Guest List", assignee: "Family", completed: false, isGuest: true, notes: "", items: [
+                { id: 101, name: "Sample Invite Name", count: 4, side: "Father", arrived: false }
+            ]}
+        ];
+
+        let state = JSON.parse(localStorage.getItem('nk_integrated_master_v12')) || initialData;
+        let activeId = null; let activeIdx = null;
+
+        function save() { localStorage.setItem('nk_integrated_master_v12', JSON.stringify(state)); render(); }
+
+        function render() {
+            const container = document.getElementById('category-cards'); container.innerHTML = '';
+            let gEst = 0, gAct = 0, gHead = 0;
+
+            state.forEach(cat => {
+                const cEst = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.est)||0), 0);
+                const cAct = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.act)||0), 0);
+                gEst += cEst; gAct += cAct;
+                if(cat.isGuest) gHead = cat.items.reduce((s, i) => s + (Number(i.count)||0), 0);
+
+                const assignedCount = cat.items.filter(i => i.p && i.p.trim() !== "").length;
+                const unassignedCount = cat.items.length - assignedCount;
+
+                const card = document.createElement('div');
+                card.className = `bg-white p-5 rounded-3xl border border-slate-100 card-shadow flex justify-between items-center transition-all active:scale-[0.97] ${cat.completed ? 'done-card' : ''}`;
+                card.onclick = () => openCategory(cat.id);
+                
+                let stats = cat.isGuest ? 
+                    `<div class="text-indigo-600 font-extrabold text-sm">${cat.items.filter(i=>i.arrived).reduce((s,i)=>s+Number(i.count),0)}/${gHead}</div>` :
+                    `<div class="text-indigo-600 font-extrabold text-sm">₹${cAct.toLocaleString()}</div>`;
+
+                card.innerHTML = `<div class="flex items-center space-x-4 truncate"><div class="w-12 h-12 rounded-2xl ${cat.completed?'bg-green-100 text-green-600':'bg-indigo-50 text-indigo-600'} flex-shrink-0 flex items-center justify-center"><i data-lucide="${cat.isGuest?'users':'package'}"></i></div><div class="truncate"><div class="text-sm font-extrabold text-slate-800 uppercase tracking-tight truncate">${cat.name}</div><div class="flex flex-wrap items-center gap-1 mt-0.5"><span class="text-[9px] text-slate-400 font-bold uppercase truncate max-w-[70px]">👤 ${cat.assignee}</span><span class="text-[8px] bg-indigo-50 text-indigo-400 px-1.5 py-0.5 rounded font-bold">${cat.items.length} TOTAL</span><span class="text-[8px] bg-green-50 text-green-500 px-1.5 py-0.5 rounded font-bold">${assignedCount} OK</span>${unassignedCount > 0 ? `<span class="text-[8px] bg-red-50 text-red-400 px-1.5 py-0.5 rounded font-bold">${unassignedCount} NO</span>` : ''}</div></div></div><div class="text-right flex-shrink-0 ml-2 leading-none">${stats}</div>`;
+                container.appendChild(card);
+            });
+            document.getElementById('header-headcount').innerText = gHead;
+            document.getElementById('grand-est').innerText = `₹${gEst.toLocaleString()}`;
+            document.getElementById('grand-act').innerText = `₹${gAct.toLocaleString()}`;
+            document.getElementById('total-savings').innerText = `₹${(gEst - gAct > 0 ? gEst - gAct : 0).toLocaleString()}`;
+            document.getElementById('budget-progress').style.width = `${(gAct/gEst)*100}%`;
+            lucide.createIcons();
         }
 
-        // Countdown Timer
-        setInterval(() => {
-            const eventTime = new Date("Feb 22, 2026 10:00:00").getTime();
-            const now = new Date().getTime();
-            const diff = eventTime - now;
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m Until Noolukettu`;
-        }, 1000);
+        function openCategory(id) {
+            activeId = id; const cat = state.find(c => c.id === id);
+            document.getElementById('detail-title').innerText = cat.name;
+            document.getElementById('detail-assignee').innerText = cat.assignee;
+            document.getElementById('cat-notes').value = cat.notes || "";
+            const sBtn = document.getElementById('status-btn');
+            sBtn.innerHTML = cat.completed ? '<i data-lucide="check" class="w-3 h-3 mr-2"></i> settled' : 'Mark Settled';
+            sBtn.className = cat.completed ? 'bg-green-500 text-white px-4 py-2 rounded-xl' : 'bg-slate-100 text-slate-400 px-4 py-2 rounded-xl';
+            const list = document.getElementById('items-list'); list.innerHTML = '';
+            
+            cat.items.forEach((item, idx) => {
+                const div = document.createElement('div');
+                if(cat.isGuest) {
+                    div.className = `p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col space-y-3 ${item.arrived ? 'guest-checked bg-green-50' : 'bg-white'}`;
+                    div.innerHTML = `<div class="flex justify-between items-center"><span class="text-sm font-bold uppercase">${item.name}</span><button onclick="toggleGuestArrival(${idx})" class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':'bg-white border-slate-200'}">${item.arrived?'<i data-lucide="check"></i>':''}</button></div><div class="flex justify-between items-center"><div class="flex space-x-1"><span onclick="updItem(${idx},'side','Father')" class="father-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Father'?'ring-1 ring-indigo-600':'opacity-40'}">FATHER</span><span onclick="updItem(${idx},'side','Mother')" class="mother-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Mother'?'ring-1 ring-pink-600':'opacity-40'}">MOTHER</span></div><div class="bg-slate-50 border border-slate-200 rounded px-2 flex items-center"><span class="text-[8px] font-bold text-slate-300 mr-2 uppercase tracking-tighter">Family Size:</span><input type="number" value="${item.count}" onchange="updItem(${idx},'count',this.value)" class="bg-transparent w-8 text-xs font-black text-indigo-700 focus:outline-none text-center"></div><button onclick="deleteItem(${idx})" class="text-slate-200"><i data-lucide="trash-2"></i></button></div>`;
+                } else {
+                    div.className = "bg-white p-5 rounded-3xl border border-slate-100 card-shadow space-y-4";
+                    const isOver = item.act > item.est && item.est > 0;
+                    div.innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-extrabold uppercase text-slate-800">${item.name}</span><div class="flex space-x-3"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-200'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-slate-200"><i data-lucide="x"></i></button></div></div><div class="grid grid-cols-2 gap-4"><div class="bg-slate-50 p-3 rounded-2xl"><label class="text-[8px] font-black text-slate-400 uppercase italic">Estimated</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-sm font-bold text-slate-700 focus:outline-none"></div><div class="bg-indigo-50 p-3 rounded-2xl"><label class="text-[8px] font-black text-indigo-400 uppercase italic">Paid/Actual</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black ${isOver?'text-red-500':'text-indigo-700'} focus:outline-none"></div></div><div class="bg-slate-50 flex items-center px-3 py-2 rounded-xl"><i data-lucide="user" class="w-3 h-3 text-slate-300 mr-2"></i><input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign to person..." class="bg-transparent w-full text-[10px] font-bold text-indigo-600 focus:outline-none"></div>${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline">View Bill Image</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
+                }
+                list.appendChild(div);
+            });
+            showView('detail'); lucide.createIcons();
+        }
 
+        // Feature Handlers
+        function triggerUpload(idx) { document.getElementById(`file-${idx}`).click(); }
+        function handleBill(input, idx) { const r = new FileReader(); r.onload = (e) => { state.find(c => c.id === activeId).items[idx].bill = e.target.result; save(); openCategory(activeId); }; r.readAsDataURL(input.files[0]); }
+        function viewBill(idx) { activeIdx = idx; document.getElementById('bill-img-preview').src = state.find(c => c.id === activeId).items[idx].bill; document.getElementById('bill-modal').classList.remove('hidden'); }
+        function closeBill() { document.getElementById('bill-modal').classList.add('hidden'); }
+        function removeBill() { if(confirm("Delete receipt photo?")) { state.find(c => c.id === activeId).items[activeIdx].bill = null; save(); closeBill(); openCategory(activeId); } }
+        function toggleGuestArrival(idx) { state.find(c => c.id === activeId).items[idx].arrived = !state.find(c => c.id === activeId).items[idx].arrived; save(); openCategory(activeId); }
+        function updItem(idx, f, v) { state.find(c => c.id === activeId).items[idx][f] = (f==='p'||f==='side')?v:Number(v); save(); if(f==='side') openCategory(activeId); }
+        function showView(v) { document.getElementById('view-dashboard').classList.toggle('hidden', v !== 'dashboard'); document.getElementById('view-detail').classList.toggle('hidden', v !== 'detail'); window.scrollTo(0,0); }
+        function toggleStatus() { const cat = state.find(c => c.id === activeId); cat.completed = !cat.completed; save(); openCategory(activeId); }
+        function updateNotes(v) { state.find(c => c.id === activeId).notes = v; save(); }
+        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("New Heading Name:", cat.name); const nL = prompt("Lead Person Name:", cat.assignee); if(nN) cat.name = nN; if(nL) cat.assignee = nL; save(); openCategory(activeId); }
+        function addItem() { const cat = state.find(c => c.id === activeId); const n = prompt(cat.isGuest?"Guest:":"Item:"); if(n) { if(cat.isGuest) cat.items.push({ id: Date.now(), name: n, count: 1, side: "Father", arrived: false }); else cat.items.push({ id: Date.now(), name: n, est: 0, act: 0, p: "", bill: null }); save(); openCategory(activeId); } }
+        function addTopic() { const n = prompt("New Topic Heading Name:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, isGuest: n.toLowerCase().includes("guest"), notes: "", items: [] }); save(); } }
+        function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state)); a.download = "noolukettu_final_integrated.json"; a.click(); }
+        function resetData() { if(confirm("FACTORY RESET? Everything will be lost.")) { state = initialData; save(); } }
+        function handleCSV(input) {
+            const r = new FileReader();
+            r.onload = (e) => {
+                const rows = e.target.result.split('\n').slice(1); const newData = [];
+                rows.forEach(row => {
+                    const c = row.split(',');
+                    if (c.length >= 4) {
+                        const cn = c[0].trim(); let cat = newData.find(cat => cat.name === cn);
+                        if (!cat) cat = { id: 'c_'+Math.random(), name: cn, assignee: c[4]||"Unassigned", completed: false, isGuest: cn.toLowerCase().includes("guest"), notes: "", items: [] };
+                        newData.push(cat);
+                        if(cat.isGuest) cat.items.push({ id: Math.random(), name: c[1].trim(), count: Number(c[2])||1, side: c[5]||"Father", arrived: false });
+                        else cat.items.push({ id: Math.random(), name: c[1].trim(), est: Number(c[2])||0, act: Number(c[3])||0, p: c[5]||"", bill: null });
+                    }
+                });
+                if(newData.length > 0) { state = newData; save(); alert("Sync Done!"); }
+            };
+            r.readAsText(input.files[0]);
+        }
+        render();
     </script>
 </body>
 </html>
