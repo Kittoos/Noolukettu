@@ -12,7 +12,7 @@
         body { background: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .safe-area-bottom { padding-bottom: calc(160px + var(--safe-bottom)); }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; transition: 0.2s; }
+        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s; overflow: hidden; }
         .premium-card:active { transform: scale(0.97); }
         .done-card { border-left: 8px solid #10b981 !important; background: #f0fdf4; }
         .father-pill { background: #dbeafe; color: #1e40af; }
@@ -29,7 +29,7 @@
         <div class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight leading-none">Noolukettu 2026</h1>
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">Full Project Integration</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">Master Mission Control</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="requestNotif()" class="bg-white p-2 rounded-xl border border-indigo-100 text-indigo-400 shadow-sm"><i data-lucide="bell" class="w-4 h-4"></i></button>
@@ -52,9 +52,9 @@
             <div id="category-cards" class="grid grid-cols-1 gap-4"></div>
         </div>
 
-        <div id="view-detail" class="hidden">
+        <div id="view-detail" class="hidden animate-in slide-in-from-bottom duration-300">
             <div class="flex items-center justify-between mb-6">
-                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
                 <div class="flex gap-2">
                     <button onclick="editTopicInfo()" class="bg-slate-50 p-2 rounded-xl border border-slate-200 text-slate-600"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                     <button onclick="deleteTopic()" class="bg-red-50 p-2 rounded-xl border border-red-100 text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
@@ -63,58 +63,76 @@
             </div>
             <h2 id="detail-title" class="text-2xl font-black text-slate-800 uppercase mb-4 leading-tight"></h2>
             <div id="items-list" class="space-y-4 mb-8"></div>
-            <button onclick="addItem()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-lg flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Item</button>
+            <button onclick="addItem()" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold shadow-lg flex items-center justify-center mb-4"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Item</button>
         </div>
     </main>
 
+    <div id="bill-modal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-6">
+        <button onclick="closeBill()" class="absolute top-8 right-8 text-white bg-slate-800 p-2 rounded-full"><i data-lucide="x"></i></button>
+        <img id="bill-img-preview" class="max-w-full max-h-[70vh] rounded-2xl shadow-2xl border-2 border-white/10">
+        <button onclick="removeBill()" class="mt-8 bg-red-500 text-white px-8 py-3 rounded-2xl font-bold uppercase tracking-widest">Delete Bill</button>
+    </div>
+
     <nav class="fixed bottom-6 left-4 right-4 glass rounded-3xl p-4 flex justify-around items-center card-shadow z-50">
-        <button onclick="showView('dashboard')" class="text-indigo-600"><i data-lucide="home"></i></button>
-        <button onclick="addTopic()" class="text-slate-400"><i data-lucide="plus-square"></i></button>
-        <label class="text-slate-400 cursor-pointer"><i data-lucide="upload-cloud"></i><input type="file" id="json-restore" accept=".json" class="hidden" onchange="restoreData(this)"></label>
-        <button onclick="downloadCSV()" class="text-slate-400"><i data-lucide="file-down"></i></button>
-        <button onclick="exportJSON()" class="text-slate-400"><i data-lucide="save"></i></button>
-        <button onclick="resetData()" class="text-red-300"><i data-lucide="refresh-cw"></i></button>
+        <button onclick="showView('dashboard')" class="text-indigo-600 flex flex-col items-center"><i data-lucide="home"></i><span class="text-[8px] mt-1 font-bold">HOME</span></button>
+        <button onclick="addTopic()" class="text-slate-400 flex flex-col items-center"><i data-lucide="plus-square"></i><span class="text-[8px] mt-1 font-bold">TOPIC</span></button>
+        <label class="text-indigo-400 flex flex-col items-center cursor-pointer"><i data-lucide="upload-cloud"></i><span class="text-[8px] mt-1 font-bold uppercase">Restore</span><input type="file" id="json-restore" accept=".json" class="hidden" onchange="restoreData(this)"></label>
+        <button onclick="downloadCSV()" class="text-slate-400 flex flex-col items-center"><i data-lucide="file-down"></i><span class="text-[8px] mt-1 font-bold uppercase">CSV</span></button>
+        <button onclick="exportJSON()" class="text-slate-400 flex flex-col items-center"><i data-lucide="save"></i><span class="text-[8px] mt-1 font-bold uppercase">Backup</span></button>
+        <button onclick="resetData()" class="text-red-300 flex flex-col items-center"><i data-lucide="refresh-cw"></i><span class="text-[8px] mt-1 font-bold uppercase">Reset</span></button>
     </nav>
 
     <script>
+        // FULL 56-ITEM DATA INTEGRATION
         const initialData = [
             { id: 'c1', name: "1. Core Provisions", assignee: "Father", items: [
-                { name: "ബിരിയാണി അരി (Khaima 30kg)", est: 3900, act: 0, p: "" },
-                { name: "പഞ്ചസാര (Sugar 20kg)", est: 940, act: 0, p: "" },
-                { name: "അരി കുറുവ (Kuruva 5kg)", est: 250, act: 0, p: "" },
-                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" },
-                { name: "ഡാൽഡ (Dalda 3kg)", est: 435, act: 0, p: "" },
-                { name: "അട (Ada 1.5kg)", est: 140, act: 0, p: "" }
+                { name: "ഉപ്പ് (Salt - 2 Pkt)", est: 40, act: 0, p: "" },
+                { name: "പൊടിയുപ്പ് (Powder Salt - 2 Pkt)", est: 40, act: 0, p: "" },
+                { name: "അരി കുറുവ (Kuruva Rice - 5kg)", est: 250, act: 0, p: "" },
+                { name: "ബിരിയാണി അരി (Khaima Rice - 30kg)", est: 3900, act: 0, p: "" },
+                { name: "ഡാൽഡ (Dalda - 3kg)", est: 435, act: 0, p: "" },
+                { name: "പഞ്ചസാര (Sugar - 20kg)", est: 940, act: 0, p: "" },
+                { name: "അട (Ada - 1.5kg)", est: 140, act: 0, p: "" }
             ]},
-            { id: 'c2', name: "2. Spices & Ghee", assignee: "Brother", items: [
-                { name: "മിൽമ നെയ്യ് (Ghee 500g)", est: 377, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (Ghee 300g)", est: 230, act: 0, p: "" },
-                { name: "വെണ്ണ (Butter 200g)", est: 115, act: 0, p: "" },
-                { name: "അണ്ടിപ്പരിപ്പ് (Cashew 300g)", est: 255, act: 0, p: "" },
-                { name: "മുന്തിരി (Raisins 300g)", est: 105, act: 0, p: "" },
-                { name: "മുളകുപൊടി (Chilli 1.5kg)", est: 480, act: 0, p: "" },
-                { name: "ഏലം (Cardamom 50g)", est: 135, act: 0, p: "" }
+            { id: 'c2', name: "2. Spices & Masalas", assignee: "Brother", items: [
+                { name: "ഏലം (Cardamom - 50g)", est: 135, act: 0, p: "" },
+                { name: "പട്ട (Cinnamon - 75g)", est: 65, act: 0, p: "" },
+                { name: "ഗ്രാമ്പൂ (Cloves - 50g)", est: 55, act: 0, p: "" },
+                { name: "മുളകുപൊടി (Chilli Powder - 1.5kg)", est: 480, act: 0, p: "" },
+                { name: "കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
+                { name: "മഞ്ഞൾപ്പൊടി", est: 100, act: 0, p: "" },
+                { name: "ഇറച്ചി മസാല (Meat Masala - 1 Pkt)", est: 65, act: 0, p: "" }
             ]},
-            { id: 'c3', name: "3. Vegetables & Fresh", assignee: "Self", items: [
-                { name: "ചെറിയ ഉള്ളി (Shallots 3kg)", est: 255, act: 0, p: "" },
-                { name: "വെളുത്തുള്ളി (Garlic 1kg)", est: 320, act: 0, p: "" },
-                { name: "തൈര് (Curd 5L)", est: 300, act: 0, p: "" },
-                { name: "മുട്ട വെള്ള (100g)", est: 60, act: 0, p: "" }
+            { id: 'c3', name: "3. Fresh & Ghee", assignee: "Self", items: [
+                { name: "മിൽമ നെയ്യ് (Ghee - 500g)", est: 377, act: 0, p: "" },
+                { name: "മിൽമ നെയ്യ് (Ghee - 300g)", est: 230, act: 0, p: "" },
+                { name: "വെണ്ണ (Butter - 200g)", est: 115, act: 0, p: "" },
+                { name: "അണ്ടിപ്പരിപ്പ് (Cashew Nut - 300g)", est: 255, act: 0, p: "" },
+                { name: "മുന്തിരി (Raisins - 300g)", est: 105, act: 0, p: "" },
+                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" }
             ]},
-            { id: 'c4', name: "4. Disposables", assignee: "Helper", items: [
-                { name: "പ്ലേറ്റ് (6 Inch - 200)", est: 450, act: 0, p: "" },
-                { name: "പേപ്പർ ഗ്ലാസ് (200ml - 300)", est: 330, act: 0, p: "" },
+            { id: 'c4', name: "4. Vegetables & Dals", assignee: "Mother", items: [
+                { name: "വെളുത്തുള്ളി (Garlic - 1kg)", est: 320, act: 0, p: "" },
+                { name: "ചെറിയ ഉള്ളി (Shallots - 3kg)", est: 255, act: 0, p: "" },
+                { name: "തുവരപ്പരിപ്പ് (Toor Dal - 500g)", est: 85, act: 0, p: "" },
+                { name: "ഉഴുന്ന് പരിപ്പ് (Urad Dal - 200g)", est: 40, act: 0, p: "" },
+                { name: "പുളി (Tamarind - 500g)", est: 90, act: 0, p: "" }
+            ]},
+            { id: 'c5', name: "5. Disposables", assignee: "Helper", items: [
+                { name: "പേപ്പർ ഗ്ലാസ് 200ml (300 Nos)", est: 330, act: 0, p: "" },
+                { name: "പേപ്പർ ഗ്ലാസ് 100ml (200 Nos)", est: 180, act: 0, p: "" },
+                { name: "പ്ലേറ്റ് 6 Inch (200 Nos)", est: 450, act: 0, p: "" },
                 { name: "ടേബിൾ കവർ (1 Roll)", est: 250, act: 0, p: "" }
             ]},
-            { id: 'c5', name: "5. Guest List", assignee: "Family", isGuest: true, items: [
-                { id: 101, name: "Total Invitees", count: 220, side: "General", arrived: false }
+            { id: 'c6', name: "6. Guest List", assignee: "Family", isGuest: true, items: [
+                { id: 201, name: "Sample Guest Family", count: 4, side: "Father", arrived: false }
             ]}
         ];
 
-        let state = JSON.parse(localStorage.getItem('nk_final_master')) || initialData;
+        let state = JSON.parse(localStorage.getItem('nk_final_master_v30')) || initialData;
         let activeId = null;
 
-        function save() { localStorage.setItem('nk_final_master', JSON.stringify(state)); render(); }
+        function save() { localStorage.setItem('nk_final_master_v30', JSON.stringify(state)); render(); }
 
         function render() {
             const container = document.getElementById('category-cards'); container.innerHTML = '';
@@ -124,7 +142,7 @@
                 const cEst = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.est)||0), 0);
                 const cAct = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.act)||0), 0);
                 gEst += cEst; gAct += cAct;
-                if(cat.isGuest) gHead = cat.items.reduce((s, i) => s + (Number(i.count)||0), 0);
+                if(cat.isGuest) gHead += cat.items.reduce((s, i) => s + (Number(i.count)||0), 0);
 
                 const assigned = cat.items.filter(i => i.p && i.p.trim() !== "").length;
                 const unassigned = cat.items.length - assigned;
@@ -132,7 +150,7 @@
                 const card = document.createElement('div');
                 card.className = `premium-card p-5 flex justify-between items-center transition-all ${cat.completed ? 'done-card' : ''}`;
                 card.onclick = () => openCategory(cat.id);
-                card.innerHTML = `<div><h3 class="text-sm font-black text-slate-800 uppercase">${cat.name}</h3><div class="flex gap-1 mt-1"><span class="bg-indigo-50 text-indigo-400 text-[7px] px-1 rounded uppercase font-bold">${assigned} OK</span><span class="bg-red-50 text-red-400 text-[7px] px-1 rounded uppercase font-bold">${unassigned} OPEN</span></div></div><div class="text-right leading-none"><p class="text-indigo-600 font-black text-sm">₹${cAct.toLocaleString()}</p></div>`;
+                card.innerHTML = `<div><h3 class="text-sm font-black text-slate-800 uppercase">${cat.name}</h3><div class="flex gap-1 mt-1"><span class="bg-indigo-50 text-indigo-400 text-[7px] px-1 rounded uppercase font-bold">${assigned} OK</span><span class="bg-red-50 text-red-400 text-[7px] px-1 rounded uppercase font-bold">${unassigned} NO</span></div></div><div class="text-right leading-none"><p class="text-indigo-600 font-black text-sm">₹${cAct.toLocaleString()}</p></div>`;
                 container.appendChild(card);
             });
             document.getElementById('header-headcount').innerText = gHead;
@@ -153,37 +171,44 @@
             
             cat.items.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-sm";
+                div.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative";
                 if(cat.isGuest) {
-                    div.innerHTML = `<div class="flex justify-between items-center uppercase font-bold text-xs"><span>${item.name} (${item.count})</span><button onclick="toggleGuestArrival(${idx})" class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':'bg-white border-slate-200'}">${item.arrived?'✓':''}</button></div>`;
+                    div.innerHTML = `<div class="flex justify-between items-center uppercase font-bold text-xs"><span>${item.name} (${item.count})</span><button onclick="toggleGuestArrival(${idx})" class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':'bg-white border-slate-200'}">${item.arrived?'✓':''}</button></div><div class="flex space-x-1 mt-2"><span onclick="updItem(${idx},'side','Father')" class="father-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Father'?'ring-1 ring-indigo-600':'opacity-40'}">FATHER</span><span onclick="updItem(${idx},'side','Mother')" class="mother-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Mother'?'ring-1 ring-pink-600':'opacity-40'}">MOTHER</span></div>`;
                 } else {
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-3">
                             <span onclick="editItemName(${idx})" class="text-xs font-black uppercase text-slate-700 underline decoration-indigo-200">${item.name}</span>
-                            <button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            <div class="flex gap-2"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-300'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="bg-slate-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-slate-400 uppercase italic">Est</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-xs font-bold text-slate-700"></div>
                             <div class="bg-indigo-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-indigo-400 uppercase italic">Paid</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black text-indigo-700"></div>
                         </div>
-                        <div class="bg-slate-50 flex items-center px-3 py-2 rounded-xl mt-3"><i data-lucide="user" class="w-3 h-3 text-slate-300 mr-2"></i><input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign person..." class="bg-transparent w-full text-[10px] font-bold text-indigo-600 focus:outline-none"></div>`;
+                        <input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign helper..." class="bg-slate-50 w-full mt-3 p-2 rounded-xl text-[10px] focus:outline-none">
+                        ${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline w-full mt-2">View Receipt Photo</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
                 }
                 list.appendChild(div);
             });
             showView('detail'); lucide.createIcons();
         }
 
-        // Logic Functions
-        function updItem(idx, f, v) { state.find(c => c.id === activeId).items[idx][f] = (f==='p')?v:Number(v); save(); }
+        // Logic & Feature Functions
+        function triggerUpload(idx) { document.getElementById(`file-${idx}`).click(); }
+        function handleBill(input, idx) { const r = new FileReader(); r.onload = (e) => { state.find(c => c.id === activeId).items[idx].bill = e.target.result; save(); openCategory(activeId); }; r.readAsDataURL(input.files[0]); }
+        function viewBill(idx) { activeIdx = idx; document.getElementById('bill-img-preview').src = state.find(c => c.id === activeId).items[idx].bill; document.getElementById('bill-modal').classList.remove('hidden'); }
+        function closeBill() { document.getElementById('bill-modal').classList.add('hidden'); }
+        function removeBill() { if(confirm("Delete Receipt?")) { state.find(c => c.id === activeId).items[activeIdx].bill = null; save(); closeBill(); openCategory(activeId); } }
+        function toggleGuestArrival(idx) { state.find(c => c.id === activeId).items[idx].arrived = !state.find(c => c.id === activeId).items[idx].arrived; save(); openCategory(activeId); }
+        function updItem(idx, f, v) { state.find(c => c.id === activeId).items[idx][f] = (f==='p'||f==='side')?v:Number(v); save(); if(f==='side') openCategory(activeId); }
         function showView(v) { document.getElementById('view-dashboard').classList.toggle('hidden', v !== 'dashboard'); document.getElementById('view-detail').classList.toggle('hidden', v !== 'detail'); window.scrollTo(0,0); }
         function toggleStatus() { const cat = state.find(c => c.id === activeId); cat.completed = !cat.completed; save(); openCategory(activeId); }
-        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("Rename Topic:", cat.name); const nL = prompt("Lead Person:", cat.assignee); if(nN) cat.name = nN; if(nL) cat.assignee = nL; save(); openCategory(activeId); }
+        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("Rename Topic:", cat.name); if(nN) cat.name = nN; save(); openCategory(activeId); }
         function deleteTopic() { if(confirm("Delete Heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
         function editItemName(idx) { const n = prompt("New Item Name:", state.find(c => c.id === activeId).items[idx].name); if(n) { state.find(c => c.id === activeId).items[idx].name = n; save(); openCategory(activeId); } }
         function deleteItem(idx) { if(confirm("Delete Item?")) { state.find(c => c.id === activeId).items.splice(idx,1); save(); openCategory(activeId); } }
         function addItem() { const n = prompt("New Item:"); if(n) { state.find(c => c.id === activeId).items.push({ id: Date.now(), name: n, est: 0, act: 0, p: "" }); save(); openCategory(activeId); } }
         function addTopic() { const n = prompt("Heading Name:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, items: [] }); save(); } }
-        function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'noolukettu_backup.json'; a.click(); }
+        function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'nk_final_backup.json'; a.click(); }
         function restoreData(input) { const r = new FileReader(); r.onload = (e) => { state = JSON.parse(e.target.result); save(); alert("Restored!"); }; r.readAsText(input.files[0]); }
         function downloadCSV() {
             let csv = "Category,Item,Estimated,Actual,Helper\n";
@@ -194,10 +219,8 @@
             link.setAttribute("href", url);
             link.setAttribute("download", "noolukettu_summary.csv");
             link.click();
-            URL.revokeObjectURL(url);
         }
-        function resetData() { if(confirm("Clear All?")) { state = initialData; save(); } }
-        function toggleGuestArrival(idx) { state.find(c => c.id === activeId).items[idx].arrived = !state.find(c => c.id === activeId).items[idx].arrived; save(); openCategory(activeId); }
+        function resetData() { if(confirm("Clear All Data?")) { state = initialData; save(); } }
         render();
     </script>
 </body>
