@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Noolukettu 2026 | Master Mission Control</title>
+    <title>Noolukettu 2026 | Master Command</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
         body { background: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .safe-area-bottom { padding-bottom: calc(160px + var(--safe-bottom)); }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s; overflow: hidden; }
+        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; transition: 0.2s; }
         .premium-card:active { transform: scale(0.97); }
         .done-card { border-left: 8px solid #10b981 !important; background: #f0fdf4; }
         .father-pill { background: #dbeafe; color: #1e40af; }
@@ -29,7 +29,7 @@
         <div class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight leading-none">Noolukettu 2026</h1>
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">Master Mission Control</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Master Mission Hub</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="requestNotif()" class="bg-white p-2 rounded-xl border border-indigo-100 text-indigo-400 shadow-sm"><i data-lucide="bell" class="w-4 h-4"></i></button>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-white p-2 rounded-xl border border-slate-100"><p class="text-[7px] font-bold text-slate-400 uppercase">Budget</p><p id="grand-est" class="text-xs font-bold text-slate-700">₹0</p></div>
+            <div class="bg-white p-2 rounded-xl border border-slate-100"><p class="text-[7px] font-bold text-slate-400 uppercase">Budget</p><p id="grand-est" class="text-xs font-bold">₹0</p></div>
             <div class="bg-indigo-50 p-2 rounded-xl border border-indigo-100"><p class="text-[7px] font-bold text-indigo-400 uppercase">Spent</p><p id="grand-act" class="text-xs font-black text-indigo-700">₹0</p></div>
             <div class="bg-green-50 p-2 rounded-xl border border-green-100"><p class="text-[7px] font-bold text-green-500 uppercase">Savings</p><p id="total-savings" class="text-xs font-black text-green-600">₹0</p></div>
         </div>
@@ -48,13 +48,13 @@
     </div>
 
     <main id="app" class="p-4 max-w-xl mx-auto">
-        <div id="view-dashboard" class="space-y-4">
+        <div id="view-dashboard" class="space-y-4 animate-in fade-in duration-500">
             <div id="category-cards" class="grid grid-cols-1 gap-4"></div>
         </div>
 
         <div id="view-detail" class="hidden animate-in slide-in-from-bottom duration-300">
             <div class="flex items-center justify-between mb-6">
-                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
+                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
                 <div class="flex gap-2">
                     <button onclick="editTopicInfo()" class="bg-slate-50 p-2 rounded-xl border border-slate-200 text-slate-600"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                     <button onclick="deleteTopic()" class="bg-red-50 p-2 rounded-xl border border-red-100 text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
@@ -69,70 +69,102 @@
 
     <div id="bill-modal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-6">
         <button onclick="closeBill()" class="absolute top-8 right-8 text-white bg-slate-800 p-2 rounded-full"><i data-lucide="x"></i></button>
-        <img id="bill-img-preview" class="max-w-full max-h-[70vh] rounded-2xl shadow-2xl border-2 border-white/10">
+        <img id="bill-img-preview" class="max-w-full max-h-[70vh] rounded-2xl shadow-2xl">
         <button onclick="removeBill()" class="mt-8 bg-red-500 text-white px-8 py-3 rounded-2xl font-bold uppercase tracking-widest">Delete Bill</button>
     </div>
 
     <nav class="fixed bottom-6 left-4 right-4 glass rounded-3xl p-4 flex justify-around items-center card-shadow z-50">
-        <button onclick="showView('dashboard')" class="text-indigo-600 flex flex-col items-center"><i data-lucide="home"></i><span class="text-[8px] mt-1 font-bold">HOME</span></button>
-        <button onclick="addTopic()" class="text-slate-400 flex flex-col items-center"><i data-lucide="plus-square"></i><span class="text-[8px] mt-1 font-bold">TOPIC</span></button>
-        <label class="text-indigo-400 flex flex-col items-center cursor-pointer"><i data-lucide="upload-cloud"></i><span class="text-[8px] mt-1 font-bold uppercase">Restore</span><input type="file" id="json-restore" accept=".json" class="hidden" onchange="restoreData(this)"></label>
-        <button onclick="downloadCSV()" class="text-slate-400 flex flex-col items-center"><i data-lucide="file-down"></i><span class="text-[8px] mt-1 font-bold uppercase">CSV</span></button>
-        <button onclick="exportJSON()" class="text-slate-400 flex flex-col items-center"><i data-lucide="save"></i><span class="text-[8px] mt-1 font-bold uppercase">Backup</span></button>
-        <button onclick="resetData()" class="text-red-300 flex flex-col items-center"><i data-lucide="refresh-cw"></i><span class="text-[8px] mt-1 font-bold uppercase">Reset</span></button>
+        <button onclick="showView('dashboard')" class="text-indigo-600 flex flex-col items-center"><i data-lucide="home"></i></button>
+        <button onclick="addTopic()" class="text-slate-400 flex flex-col items-center"><i data-lucide="plus-square"></i></button>
+        <label class="text-indigo-400 flex flex-col items-center cursor-pointer"><i data-lucide="upload-cloud"></i><input type="file" id="json-restore" accept=".json" class="hidden" onchange="restoreData(this)"></label>
+        <button onclick="downloadCSV()" class="text-slate-400 flex flex-col items-center"><i data-lucide="file-down"></i></button>
+        <button onclick="exportJSON()" class="text-slate-400 flex flex-col items-center"><i data-lucide="save"></i></button>
+        <button onclick="resetData()" class="text-red-300 flex flex-col items-center"><i data-lucide="refresh-cw"></i></button>
     </nav>
 
     <script>
-        // FULL 56-ITEM DATA INTEGRATION
         const initialData = [
-            { id: 'c1', name: "1. Core Provisions", assignee: "Father", items: [
+            { id: 'c1', name: "1. Core Provisions & Rice", assignee: "Father", items: [
                 { name: "ഉപ്പ് (Salt - 2 Pkt)", est: 40, act: 0, p: "" },
                 { name: "പൊടിയുപ്പ് (Powder Salt - 2 Pkt)", est: 40, act: 0, p: "" },
-                { name: "അരി കുറുവ (Kuruva Rice - 5kg)", est: 250, act: 0, p: "" },
-                { name: "ബിരിയാണി അരി (Khaima Rice - 30kg)", est: 3900, act: 0, p: "" },
-                { name: "ഡാൽഡ (Dalda - 3kg)", est: 435, act: 0, p: "" },
+                { name: "അരി കുറുവ (Kuruva - 5kg)", est: 250, act: 0, p: "" },
+                { name: "ബിരിയാണി അരി (Khaima - 30kg)", est: 3900, act: 0, p: "" },
                 { name: "പഞ്ചസാര (Sugar - 20kg)", est: 940, act: 0, p: "" },
                 { name: "അട (Ada - 1.5kg)", est: 140, act: 0, p: "" }
             ]},
-            { id: 'c2', name: "2. Spices & Masalas", assignee: "Brother", items: [
+            { id: 'c2', name: "2. Spices & Seeds", assignee: "Brother", items: [
                 { name: "ഏലം (Cardamom - 50g)", est: 135, act: 0, p: "" },
                 { name: "പട്ട (Cinnamon - 75g)", est: 65, act: 0, p: "" },
                 { name: "ഗ്രാമ്പൂ (Cloves - 50g)", est: 55, act: 0, p: "" },
-                { name: "മുളകുപൊടി (Chilli Powder - 1.5kg)", est: 480, act: 0, p: "" },
+                { name: "ജാതിക്ക (Nutmeg - 3 Nos)", est: 30, act: 0, p: "" },
+                { name: "ജാതിപത്രി (Mace - 50g)", est: 110, act: 0, p: "" },
+                { name: "തക്കോലം (Star Anise - 50g)", est: 60, act: 0, p: "" },
+                { name: "ഷാജീരകം (10g)", est: 20, act: 0, p: "" },
+                { name: "വലിയ ജീരകം (50g)", est: 35, act: 0, p: "" },
+                { name: "ജീരകം (Cumin - 100g)", est: 65, act: 0, p: "" },
+                { name: "കസ് കസ് (30g)", est: 70, act: 0, p: "" },
+                { name: "കടുക് (Mustard - 100g)", est: 25, act: 0, p: "" },
+                { name: "ഉലുവ (50g)", est: 15, act: 0, p: "" },
+                { name: "മല്ലി (25g)", est: 10, act: 0, p: "" },
+                { name: "കായം LG (1 Pkt)", est: 75, act: 0, p: "" },
+                { name: "വറ്റൽ മുളക് (250g)", est: 95, act: 0, p: "" },
+                { name: "പിരിയൻ മുളക് (100g)", est: 55, act: 0, p: "" }
+            ]},
+            { id: 'c3', name: "3. Powders & Masalas", assignee: "Brother", items: [
+                { name: "മുളകുപൊടി (1.5kg)", est: 480, act: 0, p: "" },
                 { name: "കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
-                { name: "മഞ്ഞൾപ്പൊടി", est: 100, act: 0, p: "" },
-                { name: "ഇറച്ചി മസാല (Meat Masala - 1 Pkt)", est: 65, act: 0, p: "" }
+                { name: "കോൺഫ്ലവർ (1.5kg)", est: 135, act: 0, p: "" },
+                { name: "കസ്തൂരി മേത്തി (25g)", est: 35, act: 0, p: "" },
+                { name: "ഇറച്ചി മസാല (1 Pkt)", est: 65, act: 0, p: "" }
             ]},
-            { id: 'c3', name: "3. Fresh & Ghee", assignee: "Self", items: [
-                { name: "മിൽമ നെയ്യ് (Ghee - 500g)", est: 377, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (Ghee - 300g)", est: 230, act: 0, p: "" },
-                { name: "വെണ്ണ (Butter - 200g)", est: 115, act: 0, p: "" },
-                { name: "അണ്ടിപ്പരിപ്പ് (Cashew Nut - 300g)", est: 255, act: 0, p: "" },
+            { id: 'c4', name: "4. Oils, Ghee & Dairy", assignee: "Father", items: [
+                { name: "ഡാൽഡ (Dalda - 3kg)", est: 435, act: 0, p: "" },
+                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" },
+                { name: "മിൽമ നെയ്യ് (500g)", est: 377, act: 0, p: "" },
+                { name: "മിൽമ നെയ്യ് (300g)", est: 230, act: 0, p: "" },
+                { name: "വെണ്ണ (Butter - 200g)", est: 115, act: 0, p: "" }
+            ]},
+            { id: 'c5', name: "5. Nuts, Fruits & Essences", assignee: "Self", items: [
+                { name: "അണ്ടിപ്പരിപ്പ് (Cashew - 300g)", est: 255, act: 0, p: "" },
                 { name: "മുന്തിരി (Raisins - 300g)", est: 105, act: 0, p: "" },
-                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" }
+                { name: "വാനില എസ്സൻസ് (20ml)", est: 25, act: 0, p: "" },
+                { name: "ഫുഡ് കളർ റെഡ് (1 No)", est: 20, act: 0, p: "" },
+                { name: "കുങ്കുമപ്പൂ എസ്സൻസ് (30ml)", est: 45, act: 0, p: "" }
             ]},
-            { id: 'c4', name: "4. Vegetables & Dals", assignee: "Mother", items: [
+            { id: 'c6', name: "6. Vegetables & Dals", assignee: "Mother", items: [
                 { name: "വെളുത്തുള്ളി (Garlic - 1kg)", est: 320, act: 0, p: "" },
                 { name: "ചെറിയ ഉള്ളി (Shallots - 3kg)", est: 255, act: 0, p: "" },
                 { name: "തുവരപ്പരിപ്പ് (Toor Dal - 500g)", est: 85, act: 0, p: "" },
                 { name: "ഉഴുന്ന് പരിപ്പ് (Urad Dal - 200g)", est: 40, act: 0, p: "" },
-                { name: "പുളി (Tamarind - 500g)", est: 90, act: 0, p: "" }
+                { name: "പുളി (Tamarind - 500g)", est: 90, act: 0, p: "" },
+                { name: "പച്ചക്കടല (Green Gram - 300g)", est: 45, act: 0, p: "" }
             ]},
-            { id: 'c5', name: "5. Disposables", assignee: "Helper", items: [
+            { id: 'c7', name: "7. Snacks, Sauces & Tea", assignee: "Self", items: [
+                { name: "അച്ചാർ (Pickle - 2kg)", est: 320, act: 0, p: "" },
+                { name: "പപ്പടം (3 Pkt)", est: 135, act: 0, p: "" },
+                { name: "മുട്ട വെള്ള (100g)", est: 60, act: 0, p: "" },
+                { name: "ടൊമാറ്റോ സോസ് (1L)", est: 160, act: 0, p: "" },
+                { name: "ചില്ലി സോസ് (200ml)", est: 65, act: 0, p: "" },
+                { name: "സോയ സോസ് (200ml)", est: 60, act: 0, p: "" },
+                { name: "ചായപ്പൊടി (250g)", est: 90, act: 0, p: "" }
+            ]},
+            { id: 'c8', name: "8. Disposables & Misc", assignee: "Helper", items: [
                 { name: "പേപ്പർ ഗ്ലാസ് 200ml (300 Nos)", est: 330, act: 0, p: "" },
                 { name: "പേപ്പർ ഗ്ലാസ് 100ml (200 Nos)", est: 180, act: 0, p: "" },
+                { name: "പേപ്പർ ഗ്ലാസ് 60ml (200 Nos)", est: 140, act: 0, p: "" },
                 { name: "പ്ലേറ്റ് 6 Inch (200 Nos)", est: 450, act: 0, p: "" },
+                { name: "വേസ്റ്റ് കവർ (1 Pkt)", est: 120, act: 0, p: "" },
                 { name: "ടേബിൾ കവർ (1 Roll)", est: 250, act: 0, p: "" }
             ]},
-            { id: 'c6', name: "6. Guest List", assignee: "Family", isGuest: true, items: [
-                { id: 201, name: "Sample Guest Family", count: 4, side: "Father", arrived: false }
+            { id: 'c9', name: "9. Guest List", assignee: "Family", isGuest: true, items: [
+                { id: 901, name: "Family Sample", count: 4, side: "Father", arrived: false }
             ]}
         ];
 
-        let state = JSON.parse(localStorage.getItem('nk_final_master_v30')) || initialData;
-        let activeId = null;
+        let state = JSON.parse(localStorage.getItem('nk_master_v100')) || initialData;
+        let activeId = null; let activeIdx = null;
 
-        function save() { localStorage.setItem('nk_final_master_v30', JSON.stringify(state)); render(); }
+        function save() { localStorage.setItem('nk_master_v100', JSON.stringify(state)); render(); }
 
         function render() {
             const container = document.getElementById('category-cards'); container.innerHTML = '';
@@ -150,7 +182,7 @@
                 const card = document.createElement('div');
                 card.className = `premium-card p-5 flex justify-between items-center transition-all ${cat.completed ? 'done-card' : ''}`;
                 card.onclick = () => openCategory(cat.id);
-                card.innerHTML = `<div><h3 class="text-sm font-black text-slate-800 uppercase">${cat.name}</h3><div class="flex gap-1 mt-1"><span class="bg-indigo-50 text-indigo-400 text-[7px] px-1 rounded uppercase font-bold">${assigned} OK</span><span class="bg-red-50 text-red-400 text-[7px] px-1 rounded uppercase font-bold">${unassigned} NO</span></div></div><div class="text-right leading-none"><p class="text-indigo-600 font-black text-sm">₹${cAct.toLocaleString()}</p></div>`;
+                card.innerHTML = `<div><h3 class="text-sm font-black text-slate-800 uppercase truncate max-w-[200px]">${cat.name}</h3><div class="flex gap-1 mt-1"><span class="bg-indigo-50 text-indigo-400 text-[7px] px-1 rounded uppercase font-bold">${assigned} OK</span><span class="bg-red-50 text-red-400 text-[7px] px-1 rounded uppercase font-bold">${unassigned} NO</span></div></div><div class="text-right leading-none"><p class="text-indigo-600 font-black text-sm">₹${cAct.toLocaleString()}</p></div>`;
                 container.appendChild(card);
             });
             document.getElementById('header-headcount').innerText = gHead;
@@ -166,33 +198,23 @@
             document.getElementById('detail-title').innerText = cat.name;
             const sBtn = document.getElementById('status-btn');
             sBtn.innerHTML = cat.completed ? 'Settled ✓' : 'Mark Settled';
-            sBtn.className = cat.completed ? 'bg-green-500 text-white px-4 py-2 rounded-xl shadow-md' : 'bg-slate-100 text-slate-400 px-4 py-2 rounded-xl';
+            sBtn.className = cat.completed ? 'bg-green-500 text-white px-4 py-2 rounded-xl' : 'bg-slate-100 text-slate-400 px-4 py-2 rounded-xl';
             const list = document.getElementById('items-list'); list.innerHTML = '';
             
             cat.items.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative";
+                div.className = "bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative";
                 if(cat.isGuest) {
-                    div.innerHTML = `<div class="flex justify-between items-center uppercase font-bold text-xs"><span>${item.name} (${item.count})</span><button onclick="toggleGuestArrival(${idx})" class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':'bg-white border-slate-200'}">${item.arrived?'✓':''}</button></div><div class="flex space-x-1 mt-2"><span onclick="updItem(${idx},'side','Father')" class="father-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Father'?'ring-1 ring-indigo-600':'opacity-40'}">FATHER</span><span onclick="updItem(${idx},'side','Mother')" class="mother-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Mother'?'ring-1 ring-pink-600':'opacity-40'}">MOTHER</span></div>`;
+                    div.innerHTML = `<div class="flex justify-between items-center uppercase font-bold text-xs"><span>${item.name} (${item.count})</span><button onclick="toggleGuestArrival(${idx})" class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':''}">${item.arrived?'✓':''}</button></div><div class="flex space-x-1 mt-2"><span onclick="updItem(${idx},'side','Father')" class="father-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Father'?'ring-1 ring-indigo-600':'opacity-40'}">FATHER</span><span onclick="updItem(${idx},'side','Mother')" class="mother-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Mother'?'ring-1 ring-pink-600':'opacity-40'}">MOTHER</span><button onclick="deleteItem(${idx})" class="text-red-200 ml-auto"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>`;
                 } else {
-                    div.innerHTML = `
-                        <div class="flex justify-between items-center mb-3">
-                            <span onclick="editItemName(${idx})" class="text-xs font-black uppercase text-slate-700 underline decoration-indigo-200">${item.name}</span>
-                            <div class="flex gap-2"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-300'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-slate-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-slate-400 uppercase italic">Est</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-xs font-bold text-slate-700"></div>
-                            <div class="bg-indigo-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-indigo-400 uppercase italic">Paid</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black text-indigo-700"></div>
-                        </div>
-                        <input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign helper..." class="bg-slate-50 w-full mt-3 p-2 rounded-xl text-[10px] focus:outline-none">
-                        ${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline w-full mt-2">View Receipt Photo</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
+                    div.innerHTML = `<div class="flex justify-between items-center mb-3"><span onclick="editItemName(${idx})" class="text-xs font-black uppercase text-slate-700 underline decoration-indigo-200">${item.name}</span><div class="flex gap-2"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-300'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2"></i></button></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-slate-400 uppercase italic">Est</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-xs font-bold"></div><div class="bg-indigo-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-indigo-400 uppercase italic">Paid</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black text-indigo-700"></div></div><input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign helper..." class="bg-slate-50 w-full mt-3 p-2 rounded-xl text-[10px] focus:outline-none">${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline w-full mt-2">View Receipt Photo</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
                 }
                 list.appendChild(div);
             });
             showView('detail'); lucide.createIcons();
         }
 
-        // Logic & Feature Functions
+        // Feature Functions
         function triggerUpload(idx) { document.getElementById(`file-${idx}`).click(); }
         function handleBill(input, idx) { const r = new FileReader(); r.onload = (e) => { state.find(c => c.id === activeId).items[idx].bill = e.target.result; save(); openCategory(activeId); }; r.readAsDataURL(input.files[0]); }
         function viewBill(idx) { activeIdx = idx; document.getElementById('bill-img-preview').src = state.find(c => c.id === activeId).items[idx].bill; document.getElementById('bill-modal').classList.remove('hidden'); }
@@ -202,13 +224,14 @@
         function updItem(idx, f, v) { state.find(c => c.id === activeId).items[idx][f] = (f==='p'||f==='side')?v:Number(v); save(); if(f==='side') openCategory(activeId); }
         function showView(v) { document.getElementById('view-dashboard').classList.toggle('hidden', v !== 'dashboard'); document.getElementById('view-detail').classList.toggle('hidden', v !== 'detail'); window.scrollTo(0,0); }
         function toggleStatus() { const cat = state.find(c => c.id === activeId); cat.completed = !cat.completed; save(); openCategory(activeId); }
-        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("Rename Topic:", cat.name); if(nN) cat.name = nN; save(); openCategory(activeId); }
-        function deleteTopic() { if(confirm("Delete Heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
+        function updateNotes(v) { state.find(c => c.id === activeId).notes = v; save(); }
+        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("New Name:", cat.name); if(nN) cat.name = nN; save(); openCategory(activeId); }
+        function deleteTopic() { if(confirm("Delete entire heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
         function editItemName(idx) { const n = prompt("New Item Name:", state.find(c => c.id === activeId).items[idx].name); if(n) { state.find(c => c.id === activeId).items[idx].name = n; save(); openCategory(activeId); } }
-        function deleteItem(idx) { if(confirm("Delete Item?")) { state.find(c => c.id === activeId).items.splice(idx,1); save(); openCategory(activeId); } }
-        function addItem() { const n = prompt("New Item:"); if(n) { state.find(c => c.id === activeId).items.push({ id: Date.now(), name: n, est: 0, act: 0, p: "" }); save(); openCategory(activeId); } }
-        function addTopic() { const n = prompt("Heading Name:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, items: [] }); save(); } }
-        function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'nk_final_backup.json'; a.click(); }
+        function deleteItem(idx) { if(confirm("Remove item?")) { state.find(c => c.id === activeId).items.splice(idx,1); save(); openCategory(activeId); } }
+        function addItem() { const n = prompt("New Item:"); if(n) { state.find(c => c.id === activeId).items.push({ id: Date.now(), name: n, est: 0, act: 0, p: "", bill: null }); save(); openCategory(activeId); } }
+        function addTopic() { const n = prompt("New Heading:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, items: [] }); save(); } }
+        function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'nk_backup.json'; a.click(); }
         function restoreData(input) { const r = new FileReader(); r.onload = (e) => { state = JSON.parse(e.target.result); save(); alert("Restored!"); }; r.readAsText(input.files[0]); }
         function downloadCSV() {
             let csv = "Category,Item,Estimated,Actual,Helper\n";
@@ -220,7 +243,7 @@
             link.setAttribute("download", "noolukettu_summary.csv");
             link.click();
         }
-        function resetData() { if(confirm("Clear All Data?")) { state = initialData; save(); } }
+        function resetData() { if(confirm("FACTORY RESET? Everything will be lost.")) { state = initialData; save(); } }
         render();
     </script>
 </body>
