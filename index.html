@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Noolukettu 2026 | Master Mission Control</title>
+    <title>Noolukettu 2026 | Ultimate Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
         <div class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight leading-none">Noolukettu 2026</h1>
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">Full Project Integration</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">Master Project Hub</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="requestNotif()" class="bg-white p-2 rounded-xl border border-indigo-100 text-indigo-400 shadow-sm"><i data-lucide="bell" class="w-4 h-4"></i></button>
@@ -64,6 +64,7 @@
             <h2 id="detail-title" class="text-2xl font-black text-slate-800 uppercase mb-1"></h2>
             <div class="inline-flex items-center text-[10px] text-indigo-500 bg-white px-3 py-1 rounded-full border border-indigo-100 mb-6">Lead: <span id="detail-assignee" class="ml-1 font-black"></span></div>
             <div id="items-list" class="space-y-4 mb-8"></div>
+            <textarea id="cat-notes" onchange="updateNotes(this.value)" class="w-full h-24 p-4 bg-yellow-50 border border-yellow-100 rounded-2xl text-sm italic mb-6" placeholder="Shop details/Logistics..."></textarea>
             <button onclick="addItem()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-lg flex items-center justify-center mb-4"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Item</button>
         </div>
     </main>
@@ -75,41 +76,74 @@
     </div>
 
     <nav class="fixed bottom-6 left-4 right-4 glass rounded-3xl p-4 flex justify-around items-center card-shadow z-50">
-        <button onclick="showView('dashboard')" class="text-indigo-600"><i data-lucide="home"></i></button>
-        <button onclick="addTopic()" class="text-slate-400"><i data-lucide="plus-square"></i></button>
-        <label class="text-slate-400 cursor-pointer"><i data-lucide="upload-cloud"></i><input type="file" id="json-restore" accept=".json" class="hidden" onchange="restoreData(this)"></label>
-        <button onclick="downloadCSV()" class="text-slate-400"><i data-lucide="file-down"></i></button>
-        <button onclick="exportJSON()" class="text-slate-400"><i data-lucide="save"></i></button>
-        <button onclick="resetData()" class="text-red-300"><i data-lucide="refresh-cw"></i></button>
+        <button onclick="showView('dashboard')" class="text-indigo-600 flex flex-col items-center"><i data-lucide="home"></i><span class="text-[8px] font-bold mt-1">HOME</span></button>
+        <button onclick="addTopic()" class="text-slate-400 flex flex-col items-center"><i data-lucide="plus-square"></i><span class="text-[8px] font-bold mt-1">ADD TOPIC</span></button>
+        <label class="text-slate-400 flex flex-col items-center cursor-pointer"><i data-lucide="upload-cloud"></i><span class="text-[8px] font-bold mt-1">RESTORE</span><input type="file" accept=".json" class="hidden" onchange="restoreData(this)"></label>
+        <button onclick="downloadCSV()" class="text-slate-400 flex flex-col items-center"><i data-lucide="file-down"></i><span class="text-[8px] font-bold mt-1">CSV OUT</span></button>
+        <button onclick="exportJSON()" class="text-slate-400 flex flex-col items-center"><i data-lucide="save"></i><span class="text-[8px] font-bold mt-1">BACKUP</span></button>
     </nav>
 
     <script>
         const initialData = [
-            { id: 'c1', name: "1. Core Provisions", assignee: "Father", items: [
-                { name: "ബിരിയാണി അരി (Khaima 30kg)", est: 3900, act: 0, p: "" },
-                { name: "പഞ്ചസാര (Sugar 20kg)", est: 940, act: 0, p: "" },
-                { name: "അരി കുറുവ (Kuruva 5kg)", est: 250, act: 0, p: "" },
-                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" },
-                { name: "ഡാൽഡ (Dalda 3kg)", est: 435, act: 0, p: "" },
-                { name: "അട (Ada 1.5kg)", est: 140, act: 0, p: "" }
-            ]},
-            { id: 'c2', name: "2. Spices & Ghee", assignee: "Brother", items: [
+            { id: 'c1', name: "1. Malayalee Traders (Groceries)", assignee: "Father", items: [
                 { name: "ഉപ്പ് (Salt 2 Pkt)", est: 40, act: 0, p: "" },
                 { name: "പൊടിയുപ്പ് (Powder Salt 2 Pkt)", est: 40, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (Ghee 500g)", est: 377, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (Ghee 300g)", est: 230, act: 0, p: "" },
-                { name: "വെണ്ണ (Butter 200g)", est: 115, act: 0, p: "" },
-                { name: "അണ്ടിപ്പരിപ്പ് (Cashew 300g)", est: 255, act: 0, p: "" },
+                { name: "അരി കുറുവ (Kuruva Rice 5kg)", est: 250, act: 0, p: "" },
+                { name: "ബിരിയാണി അരി (Khaima Rice 30kg)", est: 3900, act: 0, p: "" },
+                { name: "ഡാൽഡ (Dalda 3kg)", est: 435, act: 0, p: "" },
+                { name: "മിൽമ നെയ്യ് (Milma Ghee 500g)", est: 377, act: 0, p: "" },
+                { name: "അണ്ടിപ്പരിപ്പ് (Cashew Nut 300g)", est: 255, act: 0, p: "" },
                 { name: "മുന്തിരി (Raisins 300g)", est: 105, act: 0, p: "" },
-                { name: "മുളകുപൊടി (Chilli 1.5kg)", est: 480, act: 0, p: "" },
-                { name: "കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
-                { name: "ഇറച്ചി മസാല (Meat Masala 1 Pkt)", est: 65, act: 0, p: "" },
                 { name: "ഏലം (Cardamom 50g)", est: 135, act: 0, p: "" },
                 { name: "പട്ട (Cinnamon 75g)", est: 65, act: 0, p: "" },
-                { name: "ഗ്രാമ്പൂ (Cloves 50g)", est: 55, act: 0, p: "" }
+                { name: "ഗ്രാമ്പൂ (Cloves 50g)", est: 55, act: 0, p: "" },
+                { name: "ജാതിക്ക (Nutmeg 3 Nos)", est: 30, act: 0, p: "" },
+                { name: "ജാതിപത്രി (Mace 50g)", est: 110, act: 0, p: "" },
+                { name: "തക്കോലം (Star Anise 50g)", est: 60, act: 0, p: "" },
+                { name: "ഷാജീരകം (Caraway Seeds 10g)", est: 20, act: 0, p: "" },
+                { name: "വലിയ ജീരകം (Fennel Seeds 50g)", est: 35, act: 0, p: "" },
+                { name: "കസ് കസ് (Poppy Seeds 30g)", est: 70, act: 0, p: "" },
+                { name: "മുളകുപൊടി (Chilli Powder 1.5kg)", est: 480, act: 0, p: "" },
+                { name: "കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
+                { name: "അച്ചാർ (Pickle 2kg)", est: 320, act: 0, p: "" },
+                { name: "വെളുത്തുള്ളി (Garlic 1kg)", est: 320, act: 0, p: "" },
+                { name: "വാനില എസ്സൻസ് (Vanilla Essence 20ml)", est: 25, act: 0, p: "" },
+                { name: "ഫുഡ് കളർ റെഡ് (Red Color 1)", est: 20, act: 0, p: "" },
+                { name: "കുങ്കുമപ്പൂ എസ്സൻസ് (Saffron Essence 30ml)", est: 45, act: 0, p: "" },
+                { name: "കോൺഫ്ലവർ (Cornflour 1.5kg)", est: 135, act: 0, p: "" },
+                { name: "കസ്തൂരി മേത്തി (Kasuri Methi 25g)", est: 35, act: 0, p: "" },
+                { name: "സൺഫ്ലവർ ഓയിൽ (Sunflower Oil 3L)", est: 390, act: 0, p: "" },
+                { name: "വറ്റൽ മുളക് (Dried Chilli 250g)", est: 95, act: 0, p: "" },
+                { name: "മല്ലി (Coriander Seeds 25g)", est: 10, act: 0, p: "" },
+                { name: "കടുക് (Mustard 100g)", est: 25, act: 0, p: "" },
+                { name: "ഉലുവ (Fenugreek 50g)", est: 15, act: 0, p: "" },
+                { name: "ജീരകം (Cumin Seeds 100g)", est: 65, act: 0, p: "" },
+                { name: "കായം LG (Asafoetida 1 Pkt)", est: 75, act: 0, p: "" },
+                { name: "ചെറിയ ഉള്ളി (Shallots 3kg)", est: 255, act: 0, p: "" },
+                { name: "പുളി (Tamarind 500g)", est: 90, act: 0, p: "" },
+                { name: "തുവരപ്പരിപ്പ് (Toor Dal 500g)", est: 85, act: 0, p: "" },
+                { name: "ഉഴുന്ന് പരിപ്പ് (Urad Dal 200g)", est: 40, act: 0, p: "" },
+                { name: "പിരിയൻ മുളക് (Piriyan Chilli 100g)", est: 55, act: 0, p: "" },
+                { name: "പപ്പടം (Pappadam 3 Pkt)", est: 135, act: 0, p: "" },
+                { name: "മുട്ട വെള്ള (Egg White 100g)", est: 60, act: 0, p: "" },
+                { name: "ഇറച്ചി മസാല (Meat Masala 1 Pkt)", est: 65, act: 0, p: "" },
+                { name: "ടൊമാറ്റോ സോസ് (Tomato Sauce 1L)", est: 160, act: 0, p: "" },
+                { name: "ചില്ലി സോസ് (Chilli Sauce 200ml)", est: 65, act: 0, p: "" },
+                { name: "സോയ സോസ് (Soya Sauce 200ml)", est: 60, act: 0, p: "" },
+                { name: "പേപ്പർ ഗ്ലാസ് 200ml (300 Nos)", est: 330, act: 0, p: "" },
+                { name: "പേപ്പർ ഗ്ലാസ് 100ml (200 Nos)", est: 180, act: 0, p: "" },
+                { name: "പേപ്പർ ഗ്ലാസ് 60ml (200 Nos)", est: 140, act: 0, p: "" },
+                { name: "പ്ലേറ്റ് 6 Inch (200 Nos)", est: 450, act: 0, p: "" },
+                { name: "അട (Ada 1.5kg)", est: 140, act: 0, p: "" },
+                { name: "പഞ്ചസാര (Sugar 20kg)", est: 940, act: 0, p: "" },
+                { name: "മിൽമ നെയ്യ് (Milma Ghee 300g)", est: 230, act: 0, p: "" },
+                { name: "വെണ്ണ (Butter 200g)", est: 115, act: 0, p: "" },
+                { name: "പച്ചക്കടല (Green Gram 300g)", est: 45, act: 0, p: "" },
+                { name: "ചായപ്പൊടി (Tea Powder 250g)", est: 90, act: 0, p: "" },
+                { name: "വേസ്റ്റ് കവർ (Waste Cover 1 Pkt)", est: 120, act: 0, p: "" },
+                { name: "ടേബിൾ കവർ (Table Cover 1 Roll)", est: 250, act: 0, p: "" }
             ]},
-            { id: 'c3', name: "3. Vegetables", assignee: "Mother", items: [
-                { name: "വെളുത്തുള്ളി (Garlic 1kg)", est: 180, act: 0, p: "" },
+            { id: 'c2', name: "2. Vegetables", assignee: "Brother", items: [
                 { name: "ചെറുനാരങ്ങ (Lemon 30 Nos)", est: 100, act: 0, p: "" },
                 { name: "ഇല (Banana Leaf 200 Nos)", est: 800, act: 0, p: "" },
                 { name: "തൈര് (Curd 5L)", est: 325, act: 0, p: "" },
@@ -133,22 +167,26 @@
                 { name: "പുതിന (Mint Leaves 200g)", est: 20, act: 0, p: "" },
                 { name: "കോളിഫ്‌ളവർ (Cauliflower 3 Nos)", est: 120, act: 0, p: "" }
             ]},
-            { id: 'c4', name: "4. Meat & Disposables", assignee: "Self", items: [
+            { id: 'c3', name: "3. Fresh Meat & Fish", assignee: "Self", items: [
                 { name: "Chicken (50kg)", est: 12000, act: 0, p: "" },
                 { name: "King Fish (10kg)", est: 8000, act: 0, p: "" },
-                { name: "പ്ലേറ്റ് (6 Inch - 200)", est: 450, act: 0, p: "" },
-                { name: "പേപ്പർ ഗ്ലാസ് (200ml - 300)", est: 330, act: 0, p: "" },
-                { name: "ടേബിൾ കവർ (1 Roll)", est: 250, act: 0, p: "" }
+                { name: "Milk (40L)", est: 2200, act: 0, p: "" }
+            ]},
+            { id: 'c4', name: "4. Rentals & Logistics", assignee: "Meeran", items: [
+                { name: "Pandal Setup", est: 8000, act: 0, p: "" },
+                { name: "Plastic Chairs (220)", est: 1760, act: 0, p: "" },
+                { name: "Gold Aranjanam", est: 65000, act: 65000, p: "PAID" },
+                { name: "Tempo Traveller", est: 14500, act: 0, p: "" }
             ]},
             { id: 'c5', name: "5. Guest List", assignee: "Family", isGuest: true, items: [
                 { name: "Total Invitees", count: 220, side: "General", arrived: false }
             ]}
         ];
 
-        let state = JSON.parse(localStorage.getItem('nk_ultimate_v26')) || initialData;
-        let activeId = null;
+        let state = JSON.parse(localStorage.getItem('nk_final_malayalee_v1')) || initialData;
+        let activeId = null; let activeIdx = null;
 
-        function save() { localStorage.setItem('nk_ultimate_v26', JSON.stringify(state)); render(); }
+        function save() { localStorage.setItem('nk_final_malayalee_v1', JSON.stringify(state)); render(); }
 
         function render() {
             const container = document.getElementById('category-cards'); container.innerHTML = '';
@@ -158,7 +196,7 @@
                 const cEst = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.est)||0), 0);
                 const cAct = cat.isGuest ? 0 : cat.items.reduce((s, i) => s + (Number(i.act)||0), 0);
                 gEst += cEst; gAct += cAct;
-                if(cat.isGuest) gHead = cat.items.reduce((s, i) => s + (Number(i.count)||0), 0);
+                if(cat.isGuest) gHead += cat.items.reduce((s, i) => s + (Number(i.count)||0), 0);
 
                 const assigned = cat.items.filter(i => i.p && i.p.trim() !== "").length;
                 const unassigned = cat.items.length - assigned;
@@ -209,7 +247,7 @@
             showView('detail'); lucide.createIcons();
         }
 
-        // Feature Logic
+        // Logic Functions
         function requestNotif() { if("Notification" in window) { Notification.requestPermission().then(p => { if(p === 'granted') new Notification("Budget Alerts Active!"); }); } }
         function triggerUpload(idx) { document.getElementById(`file-${idx}`).click(); }
         function handleBill(input, idx) { const r = new FileReader(); r.onload = (e) => { state.find(c => c.id === activeId).items[idx].bill = e.target.result; save(); openCategory(activeId); }; r.readAsDataURL(input.files[0]); }
@@ -225,6 +263,7 @@
         }
         function showView(v) { document.getElementById('view-dashboard').classList.toggle('hidden', v !== 'dashboard'); document.getElementById('view-detail').classList.toggle('hidden', v !== 'detail'); window.scrollTo(0,0); }
         function toggleStatus() { const cat = state.find(c => c.id === activeId); cat.completed = !cat.completed; save(); openCategory(activeId); }
+        function updateNotes(v) { state.find(c => c.id === activeId).notes = v; save(); }
         function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("Topic Heading:", cat.name); const nL = prompt("Lead Person:", cat.assignee); if(nN) cat.name = nN; if(nL) cat.assignee = nL; save(); openCategory(activeId); }
         function deleteTopic() { if(confirm("Delete Heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
         function editItemName(idx) { const n = prompt("New Item Name:", state.find(c => c.id === activeId).items[idx].name); if(n) { state.find(c => c.id === activeId).items[idx].name = n; save(); openCategory(activeId); } }
@@ -233,7 +272,7 @@
         function addTopic() { const n = prompt("Heading Name:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, items: [] }); save(); } }
         function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'noolukettu_master_backup.json'; a.click(); }
         function restoreData(input) { const r = new FileReader(); r.onload = (e) => { state = JSON.parse(e.target.result); save(); alert("Data Restored!"); }; r.readAsText(input.files[0]); }
-        function resetData() { if(confirm("Clear All?")) { state = initialData; save(); } }
+        function resetData() { if(confirm("Clear All Data?")) { state = initialData; save(); } }
         function downloadCSV() {
             let csv = "Category,Item,Estimated,Actual,Helper\n";
             state.forEach(c => c.items.forEach(i => csv += `"${c.name}","${i.name}",${i.est || 0},${i.act || 0},"${i.p || ''}"\n`));
