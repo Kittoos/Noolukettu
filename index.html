@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Noolukettu 2026 | Master Command</title>
+    <title>Noolukettu 2026 | Final Command</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,8 +11,8 @@
         :root { --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
         body { background: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .safe-area-bottom { padding-bottom: calc(160px + var(--safe-bottom)); }
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; transition: 0.2s; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .premium-card { background: white; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s; overflow: hidden; }
         .premium-card:active { transform: scale(0.97); }
         .done-card { border-left: 8px solid #10b981 !important; background: #f0fdf4; }
         .father-pill { background: #dbeafe; color: #1e40af; }
@@ -29,7 +29,7 @@
         <div class="flex justify-between items-center mb-4">
             <div>
                 <h1 class="text-xl font-extrabold text-slate-800 uppercase tracking-tight leading-none">Noolukettu 2026</h1>
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Master Mission Hub</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Master Execution Hub</p>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="requestNotif()" class="bg-white p-2 rounded-xl border border-indigo-100 text-indigo-400 shadow-sm"><i data-lucide="bell" class="w-4 h-4"></i></button>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-white p-2 rounded-xl border border-slate-100"><p class="text-[7px] font-bold text-slate-400 uppercase">Budget</p><p id="grand-est" class="text-xs font-bold">₹0</p></div>
+            <div class="bg-white p-2 rounded-xl border border-slate-100"><p class="text-[7px] font-bold text-slate-400 uppercase">Budget</p><p id="grand-est" class="text-xs font-bold text-slate-700">₹0</p></div>
             <div class="bg-indigo-50 p-2 rounded-xl border border-indigo-100"><p class="text-[7px] font-bold text-indigo-400 uppercase">Spent</p><p id="grand-act" class="text-xs font-black text-indigo-700">₹0</p></div>
             <div class="bg-green-50 p-2 rounded-xl border border-green-100"><p class="text-[7px] font-bold text-green-500 uppercase">Savings</p><p id="total-savings" class="text-xs font-black text-green-600">₹0</p></div>
         </div>
@@ -54,7 +54,7 @@
 
         <div id="view-detail" class="hidden animate-in slide-in-from-bottom duration-300">
             <div class="flex items-center justify-between mb-6">
-                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                <button onclick="showView('dashboard')" class="bg-white p-2 rounded-xl shadow-sm border border-slate-200"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600"></i></button>
                 <div class="flex gap-2">
                     <button onclick="editTopicInfo()" class="bg-slate-50 p-2 rounded-xl border border-slate-200 text-slate-600"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                     <button onclick="deleteTopic()" class="bg-red-50 p-2 rounded-xl border border-red-100 text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
@@ -62,8 +62,13 @@
                 </div>
             </div>
             <h2 id="detail-title" class="text-2xl font-black text-slate-800 uppercase mb-4 leading-tight"></h2>
+            
+            <div class="mb-6 sticky top-2 z-40">
+                <input type="text" id="search-bar" onkeyup="filterItems()" placeholder="Search items..." class="w-full bg-white border border-slate-200 p-3 rounded-xl text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
             <div id="items-list" class="space-y-4 mb-8"></div>
-            <button onclick="addItem()" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold shadow-lg flex items-center justify-center mb-4"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Item</button>
+            <button onclick="addItem()" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold shadow-lg flex items-center justify-center mb-4"><i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add Custom Item</button>
         </div>
     </main>
 
@@ -83,88 +88,88 @@
     </nav>
 
     <script>
+        // FULL DATA INTEGRATION
         const initialData = [
-            { id: 'c1', name: "1. Core Provisions & Rice", assignee: "Father", items: [
-                { name: "ഉപ്പ് (Salt - 2 Pkt)", est: 40, act: 0, p: "" },
-                { name: "പൊടിയുപ്പ് (Powder Salt - 2 Pkt)", est: 40, act: 0, p: "" },
-                { name: "അരി കുറുവ (Kuruva - 5kg)", est: 250, act: 0, p: "" },
-                { name: "ബിരിയാണി അരി (Khaima - 30kg)", est: 3900, act: 0, p: "" },
-                { name: "പഞ്ചസാര (Sugar - 20kg)", est: 940, act: 0, p: "" },
-                { name: "അട (Ada - 1.5kg)", est: 140, act: 0, p: "" }
+            { id: 'c1', name: "Malayalee traders (PROVISION STORE)", assignee: "Father", completed: false, isGuest: false, items: [
+                { name: "1. ഉപ്പ് (Salt - 2 Pkt)", est: 40, act: 0, p: "" },
+                { name: "2. പൊടിയുപ്പ് (Powder Salt - 2 Pkt)", est: 40, act: 0, p: "" },
+                { name: "3. അരി കുറുവ (Kuruva Rice - 5kg)", est: 250, act: 0, p: "" },
+                { name: "4. ബിരിയാണി അരി (Khaima Rice - 30kg)", est: 3900, act: 0, p: "" },
+                { name: "5. ഡാൽഡ (Dalda - 3kg)", est: 435, act: 0, p: "" },
+                { name: "6. മിൽമ നെയ്യ് (Milma Ghee - 500g)", est: 377, act: 0, p: "" },
+                { name: "7. അണ്ടിപ്പരിപ്പ് (Cashew Nut - 300g)", est: 255, act: 0, p: "" },
+                { name: "8. മുന്തിരി (Raisins - 300g)", est: 105, act: 0, p: "" },
+                { name: "9. ഏലം (Cardamom - 50g)", est: 135, act: 0, p: "" },
+                { name: "10. പട്ട (Cinnamon - 75g)", est: 65, act: 0, p: "" },
+                { name: "11. ഗ്രാമ്പൂ (Cloves - 50g)", est: 55, act: 0, p: "" },
+                { name: "12. ജാതിക്ക (Nutmeg - 3 Nos)", est: 30, act: 0, p: "" },
+                { name: "13. ജാതിപത്രി (Mace - 50g)", est: 110, act: 0, p: "" },
+                { name: "14. തക്കോലം (Star Anise - 50g)", est: 60, act: 0, p: "" },
+                { name: "15. ഷാജീരകം (Caraway Seeds - 10g)", est: 20, act: 0, p: "" },
+                { name: "16. വലിയ ജീരകം (Fennel Seeds - 50g)", est: 35, act: 0, p: "" },
+                { name: "17. കസ് കസ് (Poppy Seeds - 30g)", est: 70, act: 0, p: "" },
+                { name: "18. മുളകുപൊടി (Chilli Powder - 1.5kg)", est: 480, act: 0, p: "" },
+                { name: "19. കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
+                { name: "20. അച്ചാർ (Pickle - 2kg)", est: 320, act: 0, p: "" },
+                { name: "21. വെളുത്തുള്ളി (Garlic - 1kg)", est: 320, act: 0, p: "" },
+                { name: "22. വാനില എസ്സൻസ് (Vanilla Essence - 20ml)", est: 25, act: 0, p: "" },
+                { name: "23. ഫുഡ് കളർ റെഡ് (Red Color - 1)", est: 20, act: 0, p: "" },
+                { name: "24. കുങ്കുമപ്പൂ എസ്സൻസ് (Saffron Essence - 30ml)", est: 45, act: 0, p: "" },
+                { name: "25. കോൺഫ്ലവർ (Cornflour - 1.5kg)", est: 135, act: 0, p: "" },
+                { name: "26. കസ്തൂരി മേത്തി (Kasuri Methi - 25g)", est: 35, act: 0, p: "" },
+                { name: "27. സൺഫ്ലവർ ഓയിൽ (Sunflower Oil - 3L)", est: 390, act: 0, p: "" },
+                { name: "28. വറ്റൽ മുളക് (Dried Chilli - 250g)", est: 95, act: 0, p: "" },
+                { name: "29. മല്ലി (Coriander Seeds - 25g)", est: 10, act: 0, p: "" },
+                { name: "30. കടുക് (Mustard - 100g)", est: 25, act: 0, p: "" },
+                { name: "31. ഉലുവ (Fenugreek - 50g)", est: 15, act: 0, p: "" },
+                { name: "32. ജീരകം (Cumin Seeds - 100g)", est: 65, act: 0, p: "" },
+                { name: "33. കായം LG (Asafoetida - 1 Pkt)", est: 75, act: 0, p: "" },
+                { name: "34. ചെറിയ ഉള്ളി (Shallots - 3kg)", est: 255, act: 0, p: "" },
+                { name: "35. പുളി (Tamarind - 500g)", est: 90, act: 0, p: "" },
+                { name: "36. തുവരപ്പരിപ്പ് (Toor Dal - 500g)", est: 85, act: 0, p: "" },
+                { name: "37. ഉഴുന്ന് പരിപ്പ് (Urad Dal - 200g)", est: 40, act: 0, p: "" },
+                { name: "38. പിരിയൻ മുളക് (Piriyan Chilli - 100g)", est: 55, act: 0, p: "" },
+                { name: "39. പപ്പടം (Pappadam - 3 Pkt)", est: 135, act: 0, p: "" },
+                { name: "40. മുട്ട വെള്ള (Egg White - 100g)", est: 60, act: 0, p: "" },
+                { name: "41. ഇറച്ചി മസാല (Meat Masala - 1 Pkt)", est: 65, act: 0, p: "" },
+                { name: "42. ടൊമാറ്റോ സോസ് (Tomato Sauce - 1L)", est: 160, act: 0, p: "" },
+                { name: "43. ചില്ലി സോസ് (Chilli Sauce - 200ml)", est: 65, act: 0, p: "" },
+                { name: "44. സോയ സോസ് (Soya Sauce - 200ml)", est: 60, act: 0, p: "" },
+                { name: "45. പേപ്പർ ഗ്ലാസ് (200ml - 300 Nos)", est: 330, act: 0, p: "" },
+                { name: "46. പേപ്പർ ഗ്ലാസ് (100ml - 200 Nos)", est: 180, act: 0, p: "" },
+                { name: "47. പേപ്പർ ഗ്ലാസ് (60ml - 200 Nos)", est: 140, act: 0, p: "" },
+                { name: "48. പ്ലേറ്റ് (6 Inch - 200 Nos)", est: 450, act: 0, p: "" },
+                { name: "49. അട (Ada - 1.5kg)", est: 140, act: 0, p: "" },
+                { name: "50. പഞ്ചസാര (Sugar - 20kg)", est: 940, act: 0, p: "" },
+                { name: "51. മിൽമ നെയ്യ് (Milma Ghee - 300g)", est: 230, act: 0, p: "" },
+                { name: "52. വെണ്ണ (Butter - 200g)", est: 115, act: 0, p: "" },
+                { name: "53. പച്ചക്കടല (Green Gram - 300g)", est: 45, act: 0, p: "" },
+                { name: "54. ചായപ്പൊടി (Tea Powder - 250g)", est: 90, act: 0, p: "" },
+                { name: "55. വേസ്റ്റ് കവർ (Waste Cover - 1 Pkt)", est: 120, act: 0, p: "" },
+                { name: "56. ടേബിൾ കവർ (Table Cover - 1 Roll)", est: 250, act: 0, p: "" }
             ]},
-            { id: 'c2', name: "2. Spices & Seeds", assignee: "Brother", items: [
-                { name: "ഏലം (Cardamom - 50g)", est: 135, act: 0, p: "" },
-                { name: "പട്ട (Cinnamon - 75g)", est: 65, act: 0, p: "" },
-                { name: "ഗ്രാമ്പൂ (Cloves - 50g)", est: 55, act: 0, p: "" },
-                { name: "ജാതിക്ക (Nutmeg - 3 Nos)", est: 30, act: 0, p: "" },
-                { name: "ജാതിപത്രി (Mace - 50g)", est: 110, act: 0, p: "" },
-                { name: "തക്കോലം (Star Anise - 50g)", est: 60, act: 0, p: "" },
-                { name: "ഷാജീരകം (10g)", est: 20, act: 0, p: "" },
-                { name: "വലിയ ജീരകം (50g)", est: 35, act: 0, p: "" },
-                { name: "ജീരകം (Cumin - 100g)", est: 65, act: 0, p: "" },
-                { name: "കസ് കസ് (30g)", est: 70, act: 0, p: "" },
-                { name: "കടുക് (Mustard - 100g)", est: 25, act: 0, p: "" },
-                { name: "ഉലുവ (50g)", est: 15, act: 0, p: "" },
-                { name: "മല്ലി (25g)", est: 10, act: 0, p: "" },
-                { name: "കായം LG (1 Pkt)", est: 75, act: 0, p: "" },
-                { name: "വറ്റൽ മുളക് (250g)", est: 95, act: 0, p: "" },
-                { name: "പിരിയൻ മുളക് (100g)", est: 55, act: 0, p: "" }
+            { id: 'c2', name: "Fresh Meat, Veg & Milk", assignee: "Brother", completed: false, isGuest: false, items: [
+                { name: "Chicken (50kg)", est: 12000, act: 0, p: "" },
+                { name: "King Fish (10kg)", est: 8000, act: 0, p: "" },
+                { name: "Big Onion (28kg)", est: 1120, act: 0, p: "" },
+                { name: "Tomato (7kg)", est: 210, act: 0, p: "" },
+                { name: "Milk (40L)", est: 2200, act: 0, p: "" }
             ]},
-            { id: 'c3', name: "3. Powders & Masalas", assignee: "Brother", items: [
-                { name: "മുളകുപൊടി (1.5kg)", est: 480, act: 0, p: "" },
-                { name: "കാശ്മീരി മുളകുപൊടി (500g)", est: 275, act: 0, p: "" },
-                { name: "കോൺഫ്ലവർ (1.5kg)", est: 135, act: 0, p: "" },
-                { name: "കസ്തൂരി മേത്തി (25g)", est: 35, act: 0, p: "" },
-                { name: "ഇറച്ചി മസാല (1 Pkt)", est: 65, act: 0, p: "" }
+            { id: 'c3', name: "Rentals, Gold & Logistics", assignee: "Self", completed: false, isGuest: false, items: [
+                { name: "Gold Aranjanam", est: 65000, act: 65000, p: "Settled" },
+                { name: "Pandal & Chairs", est: 9760, act: 0, p: "" },
+                { name: "Tempo Traveller", est: 14500, act: 0, p: "" }
             ]},
-            { id: 'c4', name: "4. Oils, Ghee & Dairy", assignee: "Father", items: [
-                { name: "ഡാൽഡ (Dalda - 3kg)", est: 435, act: 0, p: "" },
-                { name: "സൺഫ്ലവർ ഓയിൽ (3L)", est: 390, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (500g)", est: 377, act: 0, p: "" },
-                { name: "മിൽമ നെയ്യ് (300g)", est: 230, act: 0, p: "" },
-                { name: "വെണ്ണ (Butter - 200g)", est: 115, act: 0, p: "" }
-            ]},
-            { id: 'c5', name: "5. Nuts, Fruits & Essences", assignee: "Self", items: [
-                { name: "അണ്ടിപ്പരിപ്പ് (Cashew - 300g)", est: 255, act: 0, p: "" },
-                { name: "മുന്തിരി (Raisins - 300g)", est: 105, act: 0, p: "" },
-                { name: "വാനില എസ്സൻസ് (20ml)", est: 25, act: 0, p: "" },
-                { name: "ഫുഡ് കളർ റെഡ് (1 No)", est: 20, act: 0, p: "" },
-                { name: "കുങ്കുമപ്പൂ എസ്സൻസ് (30ml)", est: 45, act: 0, p: "" }
-            ]},
-            { id: 'c6', name: "6. Vegetables & Dals", assignee: "Mother", items: [
-                { name: "വെളുത്തുള്ളി (Garlic - 1kg)", est: 320, act: 0, p: "" },
-                { name: "ചെറിയ ഉള്ളി (Shallots - 3kg)", est: 255, act: 0, p: "" },
-                { name: "തുവരപ്പരിപ്പ് (Toor Dal - 500g)", est: 85, act: 0, p: "" },
-                { name: "ഉഴുന്ന് പരിപ്പ് (Urad Dal - 200g)", est: 40, act: 0, p: "" },
-                { name: "പുളി (Tamarind - 500g)", est: 90, act: 0, p: "" },
-                { name: "പച്ചക്കടല (Green Gram - 300g)", est: 45, act: 0, p: "" }
-            ]},
-            { id: 'c7', name: "7. Snacks, Sauces & Tea", assignee: "Self", items: [
-                { name: "അച്ചാർ (Pickle - 2kg)", est: 320, act: 0, p: "" },
-                { name: "പപ്പടം (3 Pkt)", est: 135, act: 0, p: "" },
-                { name: "മുട്ട വെള്ള (100g)", est: 60, act: 0, p: "" },
-                { name: "ടൊമാറ്റോ സോസ് (1L)", est: 160, act: 0, p: "" },
-                { name: "ചില്ലി സോസ് (200ml)", est: 65, act: 0, p: "" },
-                { name: "സോയ സോസ് (200ml)", est: 60, act: 0, p: "" },
-                { name: "ചായപ്പൊടി (250g)", est: 90, act: 0, p: "" }
-            ]},
-            { id: 'c8', name: "8. Disposables & Misc", assignee: "Helper", items: [
-                { name: "പേപ്പർ ഗ്ലാസ് 200ml (300 Nos)", est: 330, act: 0, p: "" },
-                { name: "പേപ്പർ ഗ്ലാസ് 100ml (200 Nos)", est: 180, act: 0, p: "" },
-                { name: "പേപ്പർ ഗ്ലാസ് 60ml (200 Nos)", est: 140, act: 0, p: "" },
-                { name: "പ്ലേറ്റ് 6 Inch (200 Nos)", est: 450, act: 0, p: "" },
-                { name: "വേസ്റ്റ് കവർ (1 Pkt)", est: 120, act: 0, p: "" },
-                { name: "ടേബിൾ കവർ (1 Roll)", est: 250, act: 0, p: "" }
-            ]},
-            { id: 'c9', name: "9. Guest List", assignee: "Family", isGuest: true, items: [
-                { id: 901, name: "Family Sample", count: 4, side: "Father", arrived: false }
+            { id: 'c4', name: "Guest List", assignee: "Family", completed: false, isGuest: true, items: [
+                { name: "Father Side Guests", count: 110, side: "Father", arrived: false },
+                { name: "Mother Side Guests", count: 110, side: "Mother", arrived: false }
             ]}
         ];
 
-        let state = JSON.parse(localStorage.getItem('nk_master_v100')) || initialData;
+        let state = JSON.parse(localStorage.getItem('nk_final_master_v101')) || initialData;
         let activeId = null; let activeIdx = null;
 
-        function save() { localStorage.setItem('nk_master_v100', JSON.stringify(state)); render(); }
+        function save() { localStorage.setItem('nk_final_master_v101', JSON.stringify(state)); render(); }
 
         function render() {
             const container = document.getElementById('category-cards'); container.innerHTML = '';
@@ -193,28 +198,39 @@
             lucide.createIcons();
         }
 
+        // Added Filter Logic for Large Categories
+        function filterItems() {
+            const input = document.getElementById('search-bar').value.toLowerCase();
+            const items = document.querySelectorAll('.item-row');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+
         function openCategory(id) {
             activeId = id; const cat = state.find(c => c.id === id);
             document.getElementById('detail-title').innerText = cat.name;
             const sBtn = document.getElementById('status-btn');
             sBtn.innerHTML = cat.completed ? 'Settled ✓' : 'Mark Settled';
-            sBtn.className = cat.completed ? 'bg-green-500 text-white px-4 py-2 rounded-xl' : 'bg-slate-100 text-slate-400 px-4 py-2 rounded-xl';
+            sBtn.className = cat.completed ? 'bg-green-500 text-white px-4 py-2 rounded-xl shadow-md' : 'bg-slate-100 text-slate-400 px-4 py-2 rounded-xl';
             const list = document.getElementById('items-list'); list.innerHTML = '';
+            document.getElementById('search-bar').value = ''; // Reset search
             
             cat.items.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = "bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative";
+                div.className = "item-row bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative";
                 if(cat.isGuest) {
                     div.innerHTML = `<div class="flex justify-between items-center uppercase font-bold text-xs"><span>${item.name} (${item.count})</span><button onclick="toggleGuestArrival(${idx})" class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${item.arrived?'bg-green-500 border-green-500 text-white':''}">${item.arrived?'✓':''}</button></div><div class="flex space-x-1 mt-2"><span onclick="updItem(${idx},'side','Father')" class="father-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Father'?'ring-1 ring-indigo-600':'opacity-40'}">FATHER</span><span onclick="updItem(${idx},'side','Mother')" class="mother-pill px-2 py-0.5 rounded-full text-[8px] font-bold cursor-pointer ${item.side==='Mother'?'ring-1 ring-pink-600':'opacity-40'}">MOTHER</span><button onclick="deleteItem(${idx})" class="text-red-200 ml-auto"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>`;
                 } else {
-                    div.innerHTML = `<div class="flex justify-between items-center mb-3"><span onclick="editItemName(${idx})" class="text-xs font-black uppercase text-slate-700 underline decoration-indigo-200">${item.name}</span><div class="flex gap-2"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-300'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2"></i></button></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-slate-400 uppercase italic">Est</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-xs font-bold"></div><div class="bg-indigo-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-indigo-400 uppercase italic">Paid</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black text-indigo-700"></div></div><input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign helper..." class="bg-slate-50 w-full mt-3 p-2 rounded-xl text-[10px] focus:outline-none">${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline w-full mt-2">View Receipt Photo</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
+                    div.innerHTML = `<div class="flex justify-between items-center mb-3"><span onclick="editItemName(${idx})" class="text-xs font-black uppercase text-slate-700 underline decoration-indigo-200">${item.name}</span><div class="flex gap-2"><button onclick="triggerUpload(${idx})" class="${item.bill?'text-indigo-600':'text-slate-300'}"><i data-lucide="receipt"></i></button><button onclick="deleteItem(${idx})" class="text-red-200"><i data-lucide="trash-2"></i></button></div></div><div class="grid grid-cols-2 gap-3"><div class="bg-slate-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-slate-400 uppercase italic">Est</label><input type="number" value="${item.est}" onchange="updItem(${idx},'est',this.value)" class="bg-transparent w-full text-xs font-bold text-slate-700"></div><div class="bg-indigo-50 p-2 rounded-xl"><label class="text-[7px] font-bold text-indigo-400 uppercase italic">Paid</label><input type="number" value="${item.act}" onchange="updItem(${idx},'act',this.value)" class="bg-transparent w-full text-sm font-black text-indigo-700"></div></div><input type="text" value="${item.p||''}" onchange="updItem(${idx},'p',this.value)" placeholder="Assign helper..." class="bg-slate-50 w-full mt-3 p-2 rounded-xl text-[10px] focus:outline-none">${item.bill?`<button onclick="viewBill(${idx})" class="text-[10px] font-black text-indigo-600 underline w-full mt-2">View Receipt</button>`:''}<input type="file" id="file-${idx}" class="hidden" accept="image/*" onchange="handleBill(this, ${idx})">`;
                 }
                 list.appendChild(div);
             });
             showView('detail'); lucide.createIcons();
         }
 
-        // Feature Functions
+        // Logic & Feature Functions
         function triggerUpload(idx) { document.getElementById(`file-${idx}`).click(); }
         function handleBill(input, idx) { const r = new FileReader(); r.onload = (e) => { state.find(c => c.id === activeId).items[idx].bill = e.target.result; save(); openCategory(activeId); }; r.readAsDataURL(input.files[0]); }
         function viewBill(idx) { activeIdx = idx; document.getElementById('bill-img-preview').src = state.find(c => c.id === activeId).items[idx].bill; document.getElementById('bill-modal').classList.remove('hidden'); }
@@ -224,11 +240,10 @@
         function updItem(idx, f, v) { state.find(c => c.id === activeId).items[idx][f] = (f==='p'||f==='side')?v:Number(v); save(); if(f==='side') openCategory(activeId); }
         function showView(v) { document.getElementById('view-dashboard').classList.toggle('hidden', v !== 'dashboard'); document.getElementById('view-detail').classList.toggle('hidden', v !== 'detail'); window.scrollTo(0,0); }
         function toggleStatus() { const cat = state.find(c => c.id === activeId); cat.completed = !cat.completed; save(); openCategory(activeId); }
-        function updateNotes(v) { state.find(c => c.id === activeId).notes = v; save(); }
-        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("New Name:", cat.name); if(nN) cat.name = nN; save(); openCategory(activeId); }
-        function deleteTopic() { if(confirm("Delete entire heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
+        function editTopicInfo() { const cat = state.find(c => c.id === activeId); const nN = prompt("Rename Topic:", cat.name); if(nN) cat.name = nN; save(); openCategory(activeId); }
+        function deleteTopic() { if(confirm("Delete Heading?")) { state = state.filter(c => c.id !== activeId); save(); showView('dashboard'); } }
         function editItemName(idx) { const n = prompt("New Item Name:", state.find(c => c.id === activeId).items[idx].name); if(n) { state.find(c => c.id === activeId).items[idx].name = n; save(); openCategory(activeId); } }
-        function deleteItem(idx) { if(confirm("Remove item?")) { state.find(c => c.id === activeId).items.splice(idx,1); save(); openCategory(activeId); } }
+        function deleteItem(idx) { if(confirm("Delete Item?")) { state.find(c => c.id === activeId).items.splice(idx,1); save(); openCategory(activeId); } }
         function addItem() { const n = prompt("New Item:"); if(n) { state.find(c => c.id === activeId).items.push({ id: Date.now(), name: n, est: 0, act: 0, p: "", bill: null }); save(); openCategory(activeId); } }
         function addTopic() { const n = prompt("New Heading:"); if(n) { state.push({ id: 'c_'+Date.now(), name: n, assignee: "Unassigned", completed: false, items: [] }); save(); } }
         function exportJSON() { const a = document.createElement('a'); a.href = 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); a.download = 'nk_backup.json'; a.click(); }
@@ -243,6 +258,7 @@
             link.setAttribute("download", "noolukettu_summary.csv");
             link.click();
         }
+        function requestNotif() { if("Notification" in window) Notification.requestPermission(); }
         function resetData() { if(confirm("FACTORY RESET? Everything will be lost.")) { state = initialData; save(); } }
         render();
     </script>
